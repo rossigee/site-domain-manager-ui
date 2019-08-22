@@ -1,0 +1,58 @@
+<ng-template #domainnotfound>
+  <h2>Domain not found</h2>
+
+  <div class="container">
+    <p>Domain id '{{ id }}' not found.</p>
+  </div>
+</ng-template>
+
+<div class="container" *ngIf="domain; else domainnotfound">
+  <h2>Domain '{{ domain.name }}'</h2>
+
+  <div class="container">
+    <table class="table">
+      <tr>
+        <td>
+          Registrar:
+        </td>
+        <td>
+          <div><a href="/registrar/{{domain.registrar.id}}">{{ domain.registrar.label }}</a></div>
+          <app-domain-details-registrar></app-domain-details-registrar>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          DNS Provider:
+        </td>
+        <td>
+          <div>{{ domain.dns.label }}</div>
+        </td>
+      </tr>
+
+      <tr *ngIf="domain.site">
+        <td>
+          Site hosting:
+        </td>
+        <td>
+          {{ domain.site.label }}
+        </td>
+      </tr>
+
+      <tr *ngIf="domain.waf">
+        <td>
+          WAF/proxy:
+        </td>
+        <td>
+          {{ domain.waf.label }}
+        </td>
+      </tr>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <img class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+</div>
