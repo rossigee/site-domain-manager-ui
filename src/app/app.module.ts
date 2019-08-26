@@ -17,6 +17,7 @@ import { SiteDetailsComponent } from './site-details/site-details.component';
 import { DomainSearchComponent } from './domain-search/domain-search.component';
 import { DomainDetailsComponent } from './domain-details/domain-details.component';
 import { DomainDetailsRegistrarComponent } from './domain-details-registrar/domain-details-registrar.component';
+import { DomainDetailsDNSComponent } from './domain-details-dns/domain-details-dns.component';
 import { LoginComponent } from './login/login.component';
 
 import { ErrorInterceptor } from './error.interceptor';
@@ -34,6 +35,7 @@ import { RegistrarDetailsComponent } from './registrar-details/registrar-details
     DomainSearchComponent,
     DomainDetailsComponent,
     DomainDetailsRegistrarComponent,
+    DomainDetailsDNSComponent,
     LoginComponent,
     RegistrarSearchComponent,
     RegistrarDetailsComponent,

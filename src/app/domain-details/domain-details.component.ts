@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { Domain } from '../domain';
 import { DomainDetailsService } from './domain-details.service';
 import { DomainDetailsRegistrarComponent } from '../domain-details-registrar/domain-details-registrar.component';
+import { DomainDetailsDNSComponent } from '../domain-details-dns/domain-details-dns.component';
 
 import { ToastService } from '../toast/toast.service';
 
@@ -18,6 +19,9 @@ import { ToastService } from '../toast/toast.service';
 export class DomainDetailsComponent implements OnInit, AfterViewInit {
   @ViewChild(DomainDetailsRegistrarComponent, { static: false })
   private registrarStatusChild: DomainDetailsRegistrarComponent;
+
+  @ViewChild(DomainDetailsDNSComponent, { static: false })
+  private dnsStatusChild: DomainDetailsDNSComponent;
 
   id: string;
   domain: Domain;
@@ -44,6 +48,11 @@ export class DomainDetailsComponent implements OnInit, AfterViewInit {
           if(this.domain.registrar) {
             setTimeout(() => {
               this.registrarStatusChild.fetchStatusForDomain(this.domain.registrar.id, this.domain.name);
+            });
+          }
+          if(this.domain.dns) {
+            setTimeout(() => {
+              this.dnsStatusChild.fetchStatusForDomain(this.domain.dns.id, this.domain.name);
             });
           }
         },
