@@ -2,17 +2,17 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './components/login/login.component';
-import { SiteSearchComponent } from './components/site-search/site-search.component';
 import { SiteDetailsComponent } from './components/site-details/site-details.component';
 import { DomainSearchComponent } from './components/domain-search/domain-search.component';
 import { DomainDetailsComponent } from './components/domain-details/domain-details.component';
 import { RegistrarSearchComponent } from './components/registrar-search/registrar-search.component';
 import { RegistrarDetailsComponent } from './components/registrar-details/registrar-details.component';
 import { AuthGuard } from './guards/auth.guard';
+import { SitesComponent } from './components/sites/sites.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'sites', component: SiteSearchComponent, canActivate: [AuthGuard] },
+  { path: 'sites', component: SitesComponent, canActivate: [AuthGuard] },
   {
     path: 'sites/:siteId',
     component: SiteDetailsComponent,

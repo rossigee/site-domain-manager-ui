@@ -1,44 +1,39 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { SiteDetailsService } from 'src/app/services/site-details.service';
 import { Site } from 'src/app/models/Site';
-import { ToastService } from 'src/app/services/toast.service';
+import { SitesService } from 'src/app/services/sites.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-site-details',
   templateUrl: './site-details.component.html',
   styleUrls: ['./site-details.component.css'],
-  providers: [SiteDetailsService],
+  providers: [SitesService],
 })
-export class SiteDetailsComponent implements OnInit, AfterViewInit {
-  id: string;
-  site: Site;
-  loading: boolean = false;
+export class SiteDetailsComponent implements OnInit {
+  id: number;
+  site$: Observable<Site>;
+  loading: boolean;
 
-  constructor(
-    route: ActivatedRoute,
-    private siteService: SiteDetailsService,
-    private toastService: ToastService
-  ) {
-    this.id = route.snapshot.paramMap.get('siteId');
+  constructor(route: ActivatedRoute, private sitesService: SitesService) {
+    this.id = parseInt(route.snapshot.paramMap.get('siteId'));
   }
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    setTimeout(() => (this.loading = true));
-
-    this.siteService.getSite(this.id).subscribe(
-      resp => {
-        this.loading = false;
-        this.site = resp['site'];
-        console.log(this.site);
-      },
-      error => {
-        this.loading = false;
-        this.toastService.error(error);
-      }
+  ngOnInit() {
+    this.loading = true;
+    this.sitesService.load(this.id);
+    this.site$ = this.sitesService.sites.pipe(
+      map((sites: Site[]) =>
+        sites.find((site: Site) => {
+          const condition = this.id === site.id;
+          if (condition) {
+            this.loading = false;
+          }
+          return condition;
+        })
+      )
     );
   }
 }

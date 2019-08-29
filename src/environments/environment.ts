@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  //api_url: "https://sdmgr.local/api/v1"
-  api_url: 'http://localhost:8000',
+  api_url: 'https://sdmgr.agentdesign.co.uk/api/v1',
+  // api_url: 'http://localhost:8000',
 };
 
 /*

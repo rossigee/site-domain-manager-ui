@@ -6,3 +6,7 @@ export type HandleError = <T>(
   operation?: string,
   result?: T
 ) => (error: HttpErrorResponse) => Observable<T>;
+
+export interface Headers {
+  [headerKey: string]: string;
+}

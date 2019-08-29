@@ -10,3 +10,7 @@ export interface Site {
 export interface SitesResponse {
   [sites: string]: Site[];
 }
+
+export interface SiteResponse {
+  [sites: string]: Site;
+}
