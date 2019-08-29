@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { DomainRegistrarStatus } from '../models/Domain';
+import { DomainDNSStatus } from '../models/Domain';
 
 import { environment } from '../../environments/environment';
 import { HandleError } from '../models/Http';
@@ -12,8 +12,8 @@ import { HttpErrorHandler } from './http-error-handler.service';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable()
-export class DomainDetailsRegistrarService {
-  registrarsUrl = `${environment.api_url}/registrars`;
+export class DomainDetailsDNSService {
+  dnsUrl = `${environment.api_url}/dns_providers`;
   private handleError: HandleError;
 
   constructor(
@@ -21,33 +21,30 @@ export class DomainDetailsRegistrarService {
     httpErrorHandler: HttpErrorHandler,
     private authenticationService: AuthenticationService
   ) {
-    this.handleError = httpErrorHandler.createHandleError(
-      'DomainDetailsRegistrarService'
-    );
+    this.handleError = httpErrorHandler.createHandleError('DomainDetailsDNSService');
   }
 
-  /* GET registrar status for domain */
-  public getDomainRegistrarStatusForDomain(
-    registrar_id: string,
+  /* GET dns status for domain */
+  public getDomainDNSStatusForDomain(
+    dns_provider_id: string,
     domainname: string
-  ): Observable<DomainRegistrarStatus> {
+  ): Observable<DomainDNSStatus> {
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': this.authenticationService.getAuthorizationHeader()
-    };
+    }
     var options = {
       'headers': headers,
     };
 
     return this.http
-      .get<DomainRegistrarStatus>(
-        `${this.registrarsUrl}/${registrar_id}/domains/${domainname}/status`,
-        options
+      .get<DomainDNSStatus>(
+          `${this.dnsUrl}/${dns_provider_id}/domains/${domainname}/status`, options
       )
       .pipe(
         catchError(
-          this.handleError<DomainRegistrarStatus>(
-            'getRegetRegistrarStatusForDomain'
+          this.handleError<DomainDNSStatus>(
+            'getDomainDNSStatusForDomain'
           )
         )
       );
