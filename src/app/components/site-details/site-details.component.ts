@@ -16,6 +16,7 @@ export class SiteDetailsComponent implements OnInit {
   id: number;
   site$: Observable<Site>;
   loading: boolean;
+  sitenotfound: boolean;
 
   constructor(route: ActivatedRoute, private sitesService: SitesService) {
     this.id = parseInt(route.snapshot.paramMap.get('siteId'));
