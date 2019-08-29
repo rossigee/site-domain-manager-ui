@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormControl } from '@angular/forms';
 import { SiteSearchService } from 'src/app/services/site-search.service';
-import { Site } from 'src/app/models/Site';
+import { Site, SitesResponse } from 'src/app/models/Site';
 import { ToastService } from 'src/app/services/toast.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-site-search',
@@ -14,31 +15,36 @@ import { ToastService } from 'src/app/services/toast.service';
 export class SiteSearchComponent implements OnInit {
   searchTerm = new FormControl('');
   loading: boolean = false;
-  sites: Site[];
+  sites$: Observable<Site[]>;
 
-  constructor(
-    private sitesService: SiteSearchService,
-    private toastService: ToastService
-  ) {}
+  constructor(private sitesService: SiteSearchService) {}
 
   ngOnInit() {
-    this.search();
+    this.sitesService.searchSites(this.searchTerm.value);
+    this.sites$ = this.sitesService.sites;
+  }
+  search(): void {
+    this.sitesService.searchSites(this.searchTerm.value);
   }
 
-  search(): void {
-    this.loading = true;
-    this.sitesService
-      .searchSites(this.searchTerm.value)
-      //.subscribe(sites => console.log(sites));
-      .subscribe(
-        resp => {
-          this.loading = false;
-          this.sites = resp['sites'];
-        },
-        error => {
-          this.loading = false;
-          this.toastService.error(error);
-        }
-      );
-  }
+  // search(): void {
+  //   this.loading = true;
+  //   if (!this.sites || this.searchTerm.value.length > 0) {
+  //     this.sitesService
+  //       .searchSites(this.searchTerm.value)
+  //       //.subscribe(sites => console.log(sites));
+  //       .subscribe({
+  //         next: (res: SitesResponse) => {
+  //           this.loading = false;
+  //           this.sitesService.sites = res.sites;
+  //           this.sites = this.sitesService.sites;
+  //         },
+  //         error: error => {
+  //           this.loading = false;
+  //           this.toastService.error(error);
+  //         },
+  //       });
+  //   }
+  //   this.sites = this.sitesService.sites;
+  // }
 }

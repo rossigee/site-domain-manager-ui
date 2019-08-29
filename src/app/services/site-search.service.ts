@@ -1,41 +1,52 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
 
-import { Site } from '../models/Site';
+import { Site, SitesResponse } from '../models/Site';
 
 import { environment } from '../../environments/environment';
-import { HandleError } from '../models/Http';
-import { HttpErrorHandler } from './http-error-handler.service';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class SiteSearchService {
-  sitesUrl = `${environment.api_url}/sites`;
-  private handleError: HandleError;
+  private sitesUrl: string;
+  private _sites: BehaviorSubject<Site[]>;
+  private store: SitesResponse;
 
   constructor(
     private http: HttpClient,
-    httpErrorHandler: HttpErrorHandler,
     private authenticationService: AuthenticationService
   ) {
-    this.handleError = httpErrorHandler.createHandleError('SiteSearchService');
+    this.sitesUrl = `${environment.api_url}/sites`;
+    this._sites = <BehaviorSubject<Site[]>>new BehaviorSubject([]);
+    this.store = { sites: [] };
   }
 
-  /* GET sites whose name contains search term */
-  searchSites(term: string): Observable<Site[]> {
-    var headers = {
+  get sites(): Observable<Site[]> {
+    return this._sites.asObservable();
+  }
+
+  /**
+   * Search sites by term
+   *
+   * @param term string
+   */
+  searchSites(term: string): void {
+    const headers = {
       'Content-Type': 'application/json',
       Authorization: this.authenticationService.getAuthorizationHeader(),
     };
-    var options = {
+    const options = {
       headers: headers,
       params: new HttpParams().set('label', term.trim()),
     };
-    return this.http
-      .get<Site[]>(this.sitesUrl, options)
-      .pipe(catchError(this.handleError<Site[]>('searchSites', [])));
+
+    this.http.get<SitesResponse>(this.sitesUrl, options).subscribe({
+      next: (res: SitesResponse) => {
+        this.store = res;
+        this._sites.next(Object.assign({}, this.store).sites);
+      },
+    });
   }
 }

@@ -1,6 +1,6 @@
 <label>
   Name:
-  <input type="text" [formControl]="searchTerm">
+  <input type="text" [formControl]="searchTerm" />
 </label>
 <p>
   <button (click)="search()">Search</button>
@@ -12,32 +12,39 @@
   </div>
 </ng-template>
 
-<div class="container" *ngIf="sites; else nositesfound">
+<ng-template #loading>
+  <div class="container">
+    <p>Loading</p>
+  </div>
+</ng-template>
 
-  <!--Table-->
-  <table class="table table-hover table-fixed">
+<ng-container *ngIf="sites$ | async as sites; else loading">
+  <div class="container" *ngIf="sites.length > 0; else nositesfound">
+    <!--Table-->
+    <table class="table table-hover table-fixed">
+      <!--Table head-->
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Label</th>
+          <th>Hosting</th>
+        </tr>
+      </thead>
+      <!--Table head-->
 
-    <!--Table head-->
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Label</th>
-        <th>Hosting</th>
-      </tr>
-    </thead>
-    <!--Table head-->
-
-    <!--Table body-->
-    <tbody>
-      <tr *ngFor="let site of sites; index as siteId" routerLink="/sites/{{ site.id }}">
-        <th scope="row">{{ site.id }}</th>
-        <td>{{ site.label }}</td>
-        <td>{{ site.hosting.label }}</td>
-      </tr>
-    </tbody>
-    <!--Table body-->
-
-  </table>
-  <!--Table-->
-
-</div>
+      <!--Table body-->
+      <tbody>
+        <tr
+          *ngFor="let site of sites; index as siteId"
+          routerLink="/sites/{{ site.id }}"
+        >
+          <th scope="row">{{ site.id }}</th>
+          <td>{{ site.label }}</td>
+          <td>{{ site.hosting.label }}</td>
+        </tr>
+      </tbody>
+      <!--Table body-->
+    </table>
+    <!--Table-->
+  </div>
+</ng-container>
