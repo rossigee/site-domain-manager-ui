@@ -31,10 +31,18 @@ export class SitesService {
     };
   }
 
+  /**
+   * Getter for Sites
+   */
   get sites(): Observable<Site[]> {
     return this._sites.asObservable();
   }
 
+  /**
+   * Load site by ID
+   *
+   * @param id number
+   */
   load(id: number): void {
     this.http
       .get<SiteResponse>(this.sitesUrl + '/' + id, { headers: this.headers })
@@ -58,7 +66,7 @@ export class SitesService {
   }
 
   /**
-   * Search sites by term
+   * Load all (filtered by term) sites
    *
    * @param term string default ''
    */
