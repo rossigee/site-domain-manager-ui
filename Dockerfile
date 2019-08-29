@@ -13,7 +13,7 @@ RUN apt-get update && \
 
 ADD . /build
 WORKDIR /build
-RUN npm install -g @angular/cli npm@latest && npm install
+RUN npm install -g @angular/cli npm@latest && /usr/local/bin/npm install
 RUN ng build --prod
 
 FROM ubuntu:disco
