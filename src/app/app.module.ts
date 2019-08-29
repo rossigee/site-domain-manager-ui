@@ -21,6 +21,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegistrarSearchComponent } from './components/registrar-search/registrar-search.component';
 import { RegistrarDetailsComponent } from './components/registrar-details/registrar-details.component';
 import { HttpErrorHandler } from 'src/app/services/http-error-handler.service';
+import { CacheInterceptor } from './services/cache.interceptor';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { HttpErrorHandler } from 'src/app/services/http-error-handler.service';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
     HttpErrorHandler,
   ],
   bootstrap: [AppComponent],
