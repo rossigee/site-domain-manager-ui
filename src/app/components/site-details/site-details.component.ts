@@ -15,7 +15,7 @@ import { map } from 'rxjs/operators';
 export class SiteDetailsComponent implements OnInit {
   id: number;
   site$: Observable<Site>;
-  sitenotfound: boolean;
+  notready: boolean;
 
   constructor(route: ActivatedRoute, private sitesService: SitesService) {
     this.id = parseInt(route.snapshot.paramMap.get('siteId'));
