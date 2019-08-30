@@ -10,3 +10,8 @@ export type HandleError = <T>(
 export interface Headers {
   [headerKey: string]: string;
 }
+
+export interface Loading {
+  bulk: boolean;
+  single: boolean;
+}
