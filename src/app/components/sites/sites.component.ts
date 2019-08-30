@@ -11,10 +11,19 @@ import { SitesService } from 'src/app/services/sites.service';
 })
 export class SitesComponent implements OnInit {
   searchTerm = new FormControl('');
-  loading: boolean = false;
   sites$: Observable<Site[]>;
+  notready: boolean;
 
   constructor(private sitesService: SitesService) {}
+
+  /**
+   * Get loading state from service
+   *
+   * @returns boolean
+   */
+  get loading(): boolean {
+    return this.sitesService.loading.bulk;
+  }
 
   ngOnInit() {
     // Initial load

@@ -4,9 +4,8 @@ import { Site, SitesResponse, SiteResponse } from '../models/Site';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { filter, catchError, first } from 'rxjs/operators';
-import { Headers } from '../models/Http';
-import { ToastService } from './toast.service';
+import { Headers, Loading } from '../models/Http';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +15,12 @@ export class SitesService {
   private _sites: BehaviorSubject<Site[]>;
   private store: SitesResponse;
   private headers: Headers;
+  private currentSiteId: number;
+  loading: Loading;
 
   constructor(
     private http: HttpClient,
-    private authenticationService: AuthenticationService,
-    private toastService: ToastService
+    private authenticationService: AuthenticationService
   ) {
     this.sitesUrl = `${environment.api_url}/sites`;
     this._sites = <BehaviorSubject<Site[]>>new BehaviorSubject([]);
@@ -28,6 +28,10 @@ export class SitesService {
     this.headers = {
       'Content-Type': 'application/json',
       Authorization: this.authenticationService.getAuthorizationHeader(),
+    };
+    this.loading = {
+      bulk: false,
+      single: false,
     };
   }
 
@@ -38,12 +42,29 @@ export class SitesService {
     return this._sites.asObservable();
   }
 
+  get site(): Observable<Site> {
+    this.loading.single = true;
+    return this._sites.pipe(
+      map((sites: Site[]) =>
+        sites.find((site: Site) => {
+          const condition = this.currentSiteId === site.id;
+          if (condition) {
+            this.loading.single = false;
+          }
+          return condition;
+        })
+      )
+    );
+  }
+
   /**
    * Load site by ID
    *
    * @param id number
    */
   load(id: number): void {
+    this.loading.single = true;
+    this.currentSiteId = id;
     this.http
       .get<SiteResponse>(this.sitesUrl + '/' + id, { headers: this.headers })
       .subscribe({
@@ -61,6 +82,7 @@ export class SitesService {
           }
 
           this._sites.next(Object.assign({}, this.store).sites);
+          this.loading.single = false;
         },
       });
   }
@@ -71,6 +93,7 @@ export class SitesService {
    * @param term string default ''
    */
   loadAll(term: string = ''): void {
+    this.loading.bulk = true;
     const options = {
       headers: this.headers,
       params: new HttpParams().set('label', term.trim()),
@@ -80,6 +103,7 @@ export class SitesService {
       next: (res: SitesResponse) => {
         this.store = res;
         this._sites.next(Object.assign({}, this.store).sites);
+        this.loading.bulk = false;
       },
     });
   }

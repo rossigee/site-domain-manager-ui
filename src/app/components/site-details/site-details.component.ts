@@ -15,26 +15,18 @@ import { map } from 'rxjs/operators';
 export class SiteDetailsComponent implements OnInit {
   id: number;
   site$: Observable<Site>;
-  loading: boolean;
   sitenotfound: boolean;
 
   constructor(route: ActivatedRoute, private sitesService: SitesService) {
     this.id = parseInt(route.snapshot.paramMap.get('siteId'));
   }
 
+  get loading() {
+    return this.sitesService.loading.single;
+  }
+
   ngOnInit() {
-    this.loading = true;
     this.sitesService.load(this.id);
-    this.site$ = this.sitesService.sites.pipe(
-      map((sites: Site[]) =>
-        sites.find((site: Site) => {
-          const condition = this.id === site.id;
-          if (condition) {
-            this.loading = false;
-          }
-          return condition;
-        })
-      )
-    );
+    this.site$ = this.sitesService.site;
   }
 }
