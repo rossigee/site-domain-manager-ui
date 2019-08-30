@@ -1,6 +1,6 @@
 <label>
   Name:
-  <input type="text" [formControl]="searchTerm" />
+  <input type="text" [formControl]="searchTerm" (keyup.enter)="search()" />
 </label>
 <p>
   <button (click)="search()">Search</button>
