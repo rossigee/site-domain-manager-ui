@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DomainDetailsDNSService } from 'src/app/services/domain-details-dns.service';
 import { DomainDNSStatus } from 'src/app/models/Domain';
 import { ToastService } from 'src/app/services/toast.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-domain-details-dns',
@@ -10,30 +11,19 @@ import { ToastService } from 'src/app/services/toast.service';
   providers: [DomainDetailsDNSService],
 })
 export class DomainDetailsDNSComponent implements OnInit {
-  loading: boolean = false;
-  status: DomainDNSStatus = null;
-  error: string | null = null;
+  @Input() providerId: string;
+  @Input() domain: string;
+  status$: Observable<DomainDNSStatus>;
+  notready: boolean;
 
-  constructor(
-    private domainDetailsDNSService: DomainDetailsDNSService,
-    private toastService: ToastService
-  ) {}
+  constructor(private domainDetailsDNSService: DomainDetailsDNSService) {}
 
-  ngOnInit() {}
+  get loading() {
+    return this.domainDetailsDNSService.loading.single;
+  }
 
-  fetchStatusForDomain(dns_id, domainname) {
-    this.loading = true;
-    this.domainDetailsDNSService
-      .getDomainDNSStatusForDomain(dns_id, domainname)
-      .subscribe(
-        resp => {
-          this.loading = false;
-          this.status = resp['status'];
-        },
-        error => {
-          this.loading = false;
-          this.toastService.error(error);
-        }
-      );
+  ngOnInit() {
+    this.domainDetailsDNSService.loadStatus(this.providerId, this.domain);
+    this.status$ = this.domainDetailsDNSService.status;
   }
 }

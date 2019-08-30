@@ -1,16 +1,41 @@
+<label>
+  Name:
+  <input type="text" [formControl]="searchTerm" (keyup.enter)="search()" />
+</label>
+<p>
+  <button (click)="search()">Search</button>
+</p>
+
 <div
-  *ngIf="status$ | async as status; else notready"
-  class="container domain-dns-status"
+  class="container"
+  *ngIf="!loading && domains$ | async as domains; else notready"
 >
-  <div><i>Summary</i>: {{ status.summary }}</div>
-  <div>
-    <i>Nameservers</i>:
-    <div class="container">
-      <div *ngFor="let nameserver of status.nameservers">
-        <code>{{ nameserver }}</code>
-      </div>
-    </div>
-  </div>
+  <!--Table-->
+  <table class="table table-hover table-fixed">
+    <!--Table head-->
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Registrar</th>
+      </tr>
+    </thead>
+    <!--Table head-->
+
+    <!--Table body-->
+    <tbody>
+      <tr
+        *ngFor="let domain of domains; index as domainId"
+        routerLink="/domains/{{ domain.id }}"
+      >
+        <th scope="row">{{ domain.id }}</th>
+        <td>{{ domain.name }}</td>
+        <td>{{ domain.registrar.label }}</td>
+      </tr>
+    </tbody>
+    <!--Table body-->
+  </table>
+  <!--Table-->
 </div>
 
 <ng-template #notready>
@@ -20,4 +45,5 @@
       src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
     />
   </div>
+  <p *ngIf="!loading">No sites found.</p>
 </ng-template>

@@ -24,8 +24,12 @@ export class HttpErrorHandler {
    */
   handleError<T>(serviceName = '', operation = 'operation', result = {} as T) {
     return (error: HttpErrorResponse): Observable<T> => {
+      // TODO: Create and log error tech details, maybe in backend?
+
       // Tell user via a pop-up error message
-      this.toastService.httpError(error);
+      this.toastService.error(
+        `Operation ${operation} for ${serviceName}.service failed. Server responded with status code ${error.status}`
+      );
 
       // Let the app keep running by returning a safe result.
       return of(result);

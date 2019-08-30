@@ -1,52 +1,75 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { DomainDNSStatus } from '../models/Domain';
+import { DomainDNSStatus, DomainDNSStatusResponse } from '../models/Domain';
 
 import { environment } from '../../environments/environment';
-import { HandleError } from '../models/Http';
+import { HandleError, Loading, Headers } from '../models/Http';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class DomainDetailsDNSService {
-  dnsUrl = `${environment.api_url}/dns_providers`;
+  private dnsUrl: string;
   private handleError: HandleError;
+  private _status: BehaviorSubject<DomainDNSStatus>;
+  private store: { status: DomainDNSStatus };
+  private headers: Headers;
+  loading: Loading;
 
   constructor(
     private http: HttpClient,
-    httpErrorHandler: HttpErrorHandler,
+    private httpErrorHandler: HttpErrorHandler,
     private authenticationService: AuthenticationService
   ) {
-    this.handleError = httpErrorHandler.createHandleError('DomainDetailsDNSService');
+    this.dnsUrl = `${environment.api_url}/dns_providers`;
+    this._status = <BehaviorSubject<DomainDNSStatus>>new BehaviorSubject({});
+    this.store = { status: {} as DomainDNSStatus };
+    this.loading = {
+      single: false,
+      bulk: false,
+    };
+    this.headers = {
+      'Content-Type': 'application/json',
+      Authorization: this.authenticationService.getAuthorizationHeader(),
+    };
+    this.handleError = this.httpErrorHandler.createHandleError(
+      'DomainDetailsDNS'
+    );
   }
 
-  /* GET dns status for domain */
-  public getDomainDNSStatusForDomain(
-    dns_provider_id: string,
-    domainname: string
-  ): Observable<DomainDNSStatus> {
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': this.authenticationService.getAuthorizationHeader()
-    }
-    var options = {
-      'headers': headers,
+  get status(): Observable<DomainDNSStatus> {
+    return this._status.asObservable();
+  }
+
+  loadStatus(providerId: string, domain: string): void {
+    this.loading.single = true;
+    const options = {
+      headers: this.headers,
     };
 
-    return this.http
-      .get<DomainDNSStatus>(
-          `${this.dnsUrl}/${dns_provider_id}/domains/${domainname}/status`, options
+    this.http
+      .get<DomainDNSStatusResponse>(
+        `${this.dnsUrl}/${providerId}/domains/${domain}/status`,
+        options
       )
       .pipe(
         catchError(
-          this.handleError<DomainDNSStatus>(
+          this.handleError<DomainDNSStatusResponse>(
             'getDomainDNSStatusForDomain'
           )
         )
-      );
+      )
+      .subscribe({
+        next: (res: DomainDNSStatusResponse) => {
+          const { status } = res;
+          this.store.status = status;
+          this._status.next(Object.assign({}, this.store).status);
+          this.loading.single = false;
+        },
+      });
   }
 }

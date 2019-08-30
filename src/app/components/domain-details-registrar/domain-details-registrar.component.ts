@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DomainDetailsRegistrarService } from 'src/app/services/domain-details-registrar.service';
 import { DomainRegistrarStatus } from 'src/app/models/Domain';
 import { ToastService } from 'src/app/services/toast.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-domain-details-registrar',
@@ -10,30 +11,24 @@ import { ToastService } from 'src/app/services/toast.service';
   providers: [DomainDetailsRegistrarService],
 })
 export class DomainDetailsRegistrarComponent implements OnInit {
-  loading: boolean = false;
-  status: DomainRegistrarStatus = null;
-  error: string | null = null;
+  @Input() domain: string;
+  @Input() registrarId: string;
+  status$: Observable<DomainRegistrarStatus>;
+  notready: boolean;
 
   constructor(
-    private domainDetailsRegistrarService: DomainDetailsRegistrarService,
-    private toastService: ToastService
+    private domainDetailsRegistrarService: DomainDetailsRegistrarService
   ) {}
 
-  ngOnInit() {}
+  get loading() {
+    return this.domainDetailsRegistrarService.loading.single;
+  }
 
-  fetchStatusForDomain(registrar_id, domainname) {
-    this.loading = true;
-    this.domainDetailsRegistrarService
-      .getDomainRegistrarStatusForDomain(registrar_id, domainname)
-      .subscribe(
-        resp => {
-          this.loading = false;
-          this.status = resp['status'];
-        },
-        error => {
-          this.loading = false;
-          this.toastService.error(error);
-        }
-      );
+  ngOnInit() {
+    this.domainDetailsRegistrarService.loadStatus(
+      this.registrarId,
+      this.domain
+    );
+    this.status$ = this.domainDetailsRegistrarService.status;
   }
 }

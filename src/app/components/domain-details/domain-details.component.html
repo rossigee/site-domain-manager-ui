@@ -1,13 +1,10 @@
-<ng-template #domainnotfound>
-  <h2>Domain not found</h2>
-
-  <div class="container">
-    <p>Domain id '{{ id }}' not found.</p>
-  </div>
-</ng-template>
-
-<div class="container" *ngIf="domain; else domainnotfound">
-  <h2>Domain '{{ domain.name }}'</h2>
+<div
+  class="container"
+  *ngIf="!loading && domain$ | async as domain; else notready"
+>
+  <h2>
+    <strong>{{ domain.name }}</strong>
+  </h2>
 
   <div class="container">
     <table class="table">
@@ -16,8 +13,15 @@
           Registrar:
         </td>
         <td>
-          <div><a href="/registrar/{{domain.registrar.id}}">{{ domain.registrar.label }}</a></div>
-          <app-domain-details-registrar></app-domain-details-registrar>
+          <div>
+            <a [routerLink]="['/registrars/', domain.registrar.id]">{{
+              domain.registrar.label
+            }}</a>
+          </div>
+          <app-domain-details-registrar
+            [domain]="domain.name"
+            [registrarId]="domain.registrar.id"
+          ></app-domain-details-registrar>
         </td>
       </tr>
 
@@ -27,7 +31,10 @@
         </td>
         <td>
           <div>{{ domain.dns.label }}</div>
-          <app-domain-details-dns></app-domain-details-dns>
+          <app-domain-details-dns
+            [providerId]="domain.dns.id"
+            [domain]="domain.name"
+          ></app-domain-details-dns>
         </td>
       </tr>
 
@@ -54,6 +61,18 @@
   </div>
 </div>
 
-<div *ngIf="loading">
-  <img class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-</div>
+<ng-template #notready>
+  <div *ngIf="loading">
+    <img
+      class="pl-3"
+      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
+  </div>
+  <ng-container *ngIf="!loading">
+    <h2>Domain not found</h2>
+
+    <div class="container">
+      <p>Domain id '{{ invalidId || id }}' not found.</p>
+    </div>
+  </ng-container>
+</ng-template>

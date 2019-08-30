@@ -13,7 +13,6 @@ import { ErrorInterceptor } from './error.interceptor';
 import { ToastsContainer } from './components/toast/toast-container.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { SiteDetailsComponent } from './components/site-details/site-details.component';
-import { DomainSearchComponent } from './components/domain-search/domain-search.component';
 import { DomainDetailsComponent } from './components/domain-details/domain-details.component';
 import { DomainDetailsRegistrarComponent } from './components/domain-details-registrar/domain-details-registrar.component';
 import { DomainDetailsDNSComponent } from './components/domain-details-dns/domain-details-dns.component';
@@ -23,6 +22,7 @@ import { RegistrarDetailsComponent } from './components/registrar-details/regist
 import { HttpErrorHandler } from 'src/app/services/http-error-handler.service';
 import { CacheInterceptor } from './services/cache.interceptor';
 import { SitesComponent } from './components/sites/sites.component';
+import { DomainsComponent } from './components/domains/domains.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,6 @@ import { SitesComponent } from './components/sites/sites.component';
     ToastsContainer,
     TopBarComponent,
     SiteDetailsComponent,
-    DomainSearchComponent,
     DomainDetailsComponent,
     DomainDetailsRegistrarComponent,
     DomainDetailsDNSComponent,
@@ -39,6 +38,7 @@ import { SitesComponent } from './components/sites/sites.component';
     RegistrarDetailsComponent,
     ToastsContainer,
     SitesComponent,
+    DomainsComponent,
   ],
   imports: [
     BrowserModule,

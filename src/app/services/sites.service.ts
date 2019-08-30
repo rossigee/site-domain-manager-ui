@@ -4,8 +4,9 @@ import { Site, SitesResponse, SiteResponse } from '../models/Site';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Headers, Loading } from '../models/Http';
+import { Headers, Loading, HandleError } from '../models/Http';
 import { map, catchError } from 'rxjs/operators';
+import { HttpErrorHandler } from './http-error-handler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +16,14 @@ export class SitesService {
   private _sites: BehaviorSubject<Site[]>;
   private store: SitesResponse;
   private headers: Headers;
-  private currentSiteId: number;
+  private currentSiteId: string;
+  private handleError: HandleError;
   loading: Loading;
 
   constructor(
     private http: HttpClient,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private httpErrorHandler: HttpErrorHandler
   ) {
     this.sitesUrl = `${environment.api_url}/sites`;
     this._sites = <BehaviorSubject<Site[]>>new BehaviorSubject([]);
@@ -33,6 +36,7 @@ export class SitesService {
       bulk: false,
       single: false,
     };
+    this.handleError = httpErrorHandler.createHandleError('sites');
   }
 
   /**
@@ -47,7 +51,7 @@ export class SitesService {
     return this._sites.pipe(
       map((sites: Site[]) =>
         sites.find((site: Site) => {
-          const condition = this.currentSiteId === site.id;
+          const condition = site && parseInt(this.currentSiteId) === site.id;
           if (condition) {
             this.loading.single = false;
           }
@@ -60,13 +64,14 @@ export class SitesService {
   /**
    * Load site by ID
    *
-   * @param id number
+   * @param id string
    */
-  load(id: number): void {
+  load(id: string): void {
     this.loading.single = true;
     this.currentSiteId = id;
     this.http
       .get<SiteResponse>(this.sitesUrl + '/' + id, { headers: this.headers })
+      .pipe(catchError(this.handleError<SiteResponse>('load')))
       .subscribe({
         next: (res: SiteResponse) => {
           let notFound = true;
@@ -99,12 +104,15 @@ export class SitesService {
       params: new HttpParams().set('label', term.trim()),
     };
 
-    this.http.get<SitesResponse>(this.sitesUrl, options).subscribe({
-      next: (res: SitesResponse) => {
-        this.store = res;
-        this._sites.next(Object.assign({}, this.store).sites);
-        this.loading.bulk = false;
-      },
-    });
+    this.http
+      .get<SitesResponse>(this.sitesUrl, options)
+      .pipe(catchError(this.handleError<SiteResponse>('loadAll')))
+      .subscribe({
+        next: (res: SitesResponse) => {
+          this.store = res;
+          this._sites.next(Object.assign({}, this.store).sites);
+          this.loading.bulk = false;
+        },
+      });
   }
 }

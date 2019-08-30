@@ -2,66 +2,30 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Domain } from 'src/app/models/Domain';
-import { ToastService } from 'src/app/services/toast.service';
-import { DomainDetailsService } from 'src/app/services/domain-details.service';
-import { DomainDetailsRegistrarComponent } from '../domain-details-registrar/domain-details-registrar.component';
-import { DomainDetailsDNSComponent } from '../domain-details-dns/domain-details-dns.component';
+import { DomainsService } from 'src/app/services/domains.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-domain-details',
   templateUrl: './domain-details.component.html',
   styleUrls: ['./domain-details.component.css'],
-  providers: [DomainDetailsService],
+  providers: [DomainsService],
 })
-export class DomainDetailsComponent implements OnInit, AfterViewInit {
-  @ViewChild(DomainDetailsRegistrarComponent, { static: false })
-  private registrarStatusChild: DomainDetailsRegistrarComponent;
-
-  @ViewChild(DomainDetailsDNSComponent, { static: false })
-  private dnsStatusChild: DomainDetailsDNSComponent;
-
+export class DomainDetailsComponent implements OnInit {
   id: string;
-  domain: Domain;
-  loading: boolean = false;
+  domain$: Observable<Domain>;
+  notready: boolean;
 
-  constructor(
-    route: ActivatedRoute,
-    private domainService: DomainDetailsService,
-    private toastService: ToastService
-  ) {
+  constructor(route: ActivatedRoute, private domainService: DomainsService) {
     this.id = route.snapshot.paramMap.get('domainId');
   }
 
-  ngOnInit() {}
+  get loading() {
+    return this.domainService.loading.single;
+  }
 
-  ngAfterViewInit() {
-    setTimeout(() => (this.loading = true));
-
-    this.domainService.getDomain(this.id).subscribe(
-      resp => {
-        this.loading = false;
-        this.domain = resp['domain'];
-        if (this.domain.registrar) {
-          setTimeout(() => {
-            this.registrarStatusChild.fetchStatusForDomain(
-              this.domain.registrar.id,
-              this.domain.name
-            );
-          });
-        }
-        if (this.domain.dns) {
-          setTimeout(() => {
-            this.dnsStatusChild.fetchStatusForDomain(
-              this.domain.dns.id,
-              this.domain.name
-            );
-          });
-        }
-      },
-      error => {
-        this.loading = false;
-        this.toastService.error(error);
-      }
-    );
+  ngOnInit() {
+    this.domainService.load(this.id);
+    this.domain$ = this.domainService.domain;
   }
 }

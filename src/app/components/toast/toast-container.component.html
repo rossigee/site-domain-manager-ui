@@ -1,9 +1,9 @@
 <ngb-toast
-*ngFor="let toast of toastService.toasts"
-[class]="toast.classname"
-[autohide]="false"
-(hide)="toastService.remove(toast)"
-header="{{ toast.type }}"
+  *ngFor="let toast of toastService.toasts"
+  [class]="toast.classname"
+  [autohide]="false"
+  (hide)="toastService.remove(toast)"
+  header="{{ toast.type }}"
 >
   <ng-template #text>
     {{ toast.textOrTpl }}
@@ -12,5 +12,4 @@ header="{{ toast.type }}"
   <ng-template *ngIf="isTemplate(toast); else text">
     <ng-template [ngTemplateOutlet]="toast.textOrTpl"></ng-template>
   </ng-template>
-
 </ngb-toast>

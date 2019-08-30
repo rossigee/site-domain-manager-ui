@@ -13,10 +13,7 @@ import { ToastService } from './services/toast.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(
-    private authenticationService: AuthenticationService,
-    private toastService: ToastService
-  ) {}
+  constructor(private authenticationService: AuthenticationService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -30,14 +27,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.authenticationService.logout();
             location.reload(true);
           }
-          try {
-            this.toastService.error(err.error.detail);
-          } catch (e) {
-            this.toastService.error('An error occurred');
-          }
-
-          const error = err.error.detail || err.error.message || err.statusText;
-          return of(error);
+          return throwError(err);
         }
       })
     );
