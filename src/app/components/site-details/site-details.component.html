@@ -24,7 +24,10 @@
     <h2>Site not found</h2>
 
     <div class="container">
-      <p>Site id '{{ id }}' not found.</p>
+      <p>
+        Site id <strong *ngIf="invalidId">{{ invalidId }}</strong>
+        <strong *ngIf="!invalidId">{{ invalidId }}</strong> not found.
+      </p>
     </div>
   </ng-container>
   <div *ngIf="loading">

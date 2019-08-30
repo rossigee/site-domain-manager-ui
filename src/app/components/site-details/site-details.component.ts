@@ -14,11 +14,17 @@ import { map } from 'rxjs/operators';
 })
 export class SiteDetailsComponent implements OnInit {
   id: number;
+  invalidId: string | undefined;
   site$: Observable<Site>;
   notready: boolean;
 
   constructor(route: ActivatedRoute, private sitesService: SitesService) {
-    this.id = parseInt(route.snapshot.paramMap.get('siteId'));
+    const parsedId = parseInt(route.snapshot.paramMap.get('siteId'));
+    if (isNaN(parsedId)) {
+      this.invalidId = route.snapshot.paramMap.get('siteId');
+    } else {
+      this.id = parsedId;
+    }
   }
 
   get loading() {
@@ -26,7 +32,9 @@ export class SiteDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.sitesService.load(this.id);
-    this.site$ = this.sitesService.site;
+    if (!this.invalidId) {
+      this.sitesService.load(this.id);
+      this.site$ = this.sitesService.site;
+    }
   }
 }
