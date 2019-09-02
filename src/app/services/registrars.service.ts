@@ -11,9 +11,8 @@ import { AuthenticationService } from './authentication.service';
 import { environment } from 'src/environments/environment';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { map, catchError } from 'rxjs/operators';
-import { HttpParams, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastService } from './toast.service';
-import { HttpCacheService } from './http-cache.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +21,7 @@ export class RegistrarsService {
   private registrarsUrl: string;
   private _registrars: BehaviorSubject<Registrar[]>;
   private store: { registrars: Registrar[] };
-  private headers: Headers;
+  private headers: HttpHeaders;
   private handleError: HandleError;
   private currentRegistrarId: string;
   handlingState: {
@@ -35,17 +34,18 @@ export class RegistrarsService {
     private http: HttpClient,
     private authenticationService: AuthenticationService,
     private httpErrorHandler: HttpErrorHandler,
-    private cache: HttpCacheService,
     private toastService: ToastService
   ) {
     this.registrarsUrl = `${environment.api_url}/registrars`;
     this.handleError = this.httpErrorHandler.createHandleError('registrars');
     this._registrars = <BehaviorSubject<Registrar[]>>new BehaviorSubject([]);
     this.store = { registrars: [] };
-    this.headers = {
-      'Content-Type': 'application/json',
-      Authorization: this.authenticationService.getAuthorizationHeader(),
-    };
+    this.headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append(
+        'Authorization',
+        this.authenticationService.getAuthorizationHeader()
+      );
     this.loading = {
       bulk: false,
       single: false,
@@ -87,7 +87,7 @@ export class RegistrarsService {
    *
    * @param term string default ''
    */
-  loadAll(term: string = ''): void {
+  loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
     const options = {
       headers: this.headers,
@@ -111,12 +111,15 @@ export class RegistrarsService {
    *
    * @param {string} id Registrar ID
    */
-  load(id: string): void {
+  load(id: string, force: boolean = false): void {
     const url = this.registrarsUrl + '/' + id;
     this.loading.single = true;
     this.currentRegistrarId = id;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
     this.http
-      .get<Registrar>(url, { headers: this.headers })
+      .get<Registrar>(url, { headers })
       .pipe(catchError(this.handleError<Registrar>('load')))
       .subscribe({
         next: (res: Registrar) => {
@@ -140,17 +143,6 @@ export class RegistrarsService {
   }
 
   /**
-   * Clear cache and get data for registrar. If no param passed will clear entire cache
-   *
-   * @param {string} id Registrar ID.
-   */
-  refresh(id: string = ''): void {
-    const entity = `${this.registrarsUrl}${id ? `/${id}` : ''}`;
-    this.cache.flush(entity);
-    id ? this.load(id) : this.loadAll();
-  }
-
-  /**
    * Upload file to backend
    *
    * @param {File} file File to upload
@@ -158,8 +150,7 @@ export class RegistrarsService {
    */
   uploadFile(file: File, type: string) {
     this.handlingState.uploading = true;
-    const headers = Object.assign({}, this.headers);
-    delete headers['Content-Type'];
+    const headers = this.headers.delete('Content-Type');
     const endpoint = `${this.registrarsUrl}/${this.currentRegistrarId}/${type}`;
     const formData: FormData = new FormData();
 
@@ -175,7 +166,7 @@ export class RegistrarsService {
             );
           }
           this.handlingState.uploading = false;
-          this.refresh(this.currentRegistrarId);
+          this.load(this.currentRegistrarId, true);
         },
       });
   }
@@ -190,15 +181,14 @@ export class RegistrarsService {
     delete headers['Content-Type'];
 
     const endpoint = `${this.registrarsUrl}/${this.currentRegistrarId}/refresh`;
-    this.cache.flush(endpoint);
     this.http.get<PostResponse>(endpoint, { headers }).pipe(
       map(res => {
         if (res.status == 'ok') {
           this.toastService.notice(
             `Refresh successful. ${res.records_read} records updated.`
           );
+          this.load(this.currentRegistrarId, true);
         }
-        this.refresh(this.currentRegistrarId);
       }),
       catchError(this.handleError<PostResponse>('refreshFromAPI'))
     );

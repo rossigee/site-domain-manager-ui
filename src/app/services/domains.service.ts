@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Domain, DomainsResponse, DomainResponse } from '../models/Domain';
 import { Headers, Loading, HandleError } from '../models/Http';
 import { AuthenticationService } from './authentication.service';
-import { HttpParams, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { HttpErrorHandler } from './http-error-handler.service';
 
@@ -16,7 +16,7 @@ export class DomainsService {
   private domainsUrl: string;
   private _domains: BehaviorSubject<Domain[]>;
   private store: DomainsResponse;
-  private headers: Headers;
+  private headers: HttpHeaders;
   private currentDomainId: string;
   private handleError: HandleError;
   loading: Loading;
@@ -29,15 +29,17 @@ export class DomainsService {
     this.domainsUrl = `${environment.api_url}/domains`;
     this._domains = <BehaviorSubject<Domain[]>>new BehaviorSubject([]);
     this.store = { domains: [] };
-    this.headers = {
-      'Content-Type': 'application/json',
-      Authorization: this.authenticationService.getAuthorizationHeader(),
-    };
+    this.headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append(
+        'Authorization',
+        this.authenticationService.getAuthorizationHeader()
+      );
     this.loading = {
       bulk: false,
       single: false,
     };
-    this.handleError = httpErrorHandler.createHandleError('domains');
+    this.handleError = this.httpErrorHandler.createHandleError('domains');
   }
 
   get domains(): Observable<Domain[]> {
@@ -63,14 +65,18 @@ export class DomainsService {
   /**
    * Load domain by ID
    *
-   * @param id number
+   * @param {string} id Domain ID
+   * @param {boolean} force Force ignore cache
    */
-  load(id: string): void {
+  load(id: string, force: boolean = false): void {
     this.loading.single = true;
     this.currentDomainId = id;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
     this.http
       .get<DomainResponse>(this.domainsUrl + '/' + id, {
-        headers: this.headers,
+        headers,
       })
       .pipe(catchError(this.handleError<DomainResponse>('load')))
       .subscribe({
@@ -96,12 +102,16 @@ export class DomainsService {
   /**
    * Load all (filtered by term) domains
    *
-   * @param term string default ''
+   * @param {string} term Search term. Default ''
+   * @param {boolean} force Force ignore cache
    */
-  loadAll(term: string = ''): void {
+  loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
     const options = {
-      headers: this.headers,
+      headers,
       params: new HttpParams().set('name', term.trim()),
     };
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class DomainDetailsDNSService {
   private handleError: HandleError;
   private _status: BehaviorSubject<DomainDNSStatus>;
   private store: { status: DomainDNSStatus };
-  private headers: Headers;
+  private headers: HttpHeaders;
   loading: Loading;
 
   constructor(
@@ -32,10 +32,12 @@ export class DomainDetailsDNSService {
       single: false,
       bulk: false,
     };
-    this.headers = {
-      'Content-Type': 'application/json',
-      Authorization: this.authenticationService.getAuthorizationHeader(),
-    };
+    this.headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append(
+        'Authorization',
+        this.authenticationService.getAuthorizationHeader()
+      );
     this.handleError = this.httpErrorHandler.createHandleError(
       'DomainDetailsDNS'
     );
@@ -45,10 +47,17 @@ export class DomainDetailsDNSService {
     return this._status.asObservable();
   }
 
-  loadStatus(providerId: string, domain: string): void {
+  /**
+   * Load dns status for given domain
+   *
+   * @param {string} providerId Provider ID
+   * @param {string} domain Domain name
+   * @param {boolean} force Force ignore cache
+   */
+  loadStatus(providerId: string, domain: string, force: boolean = false): void {
     this.loading.single = true;
     const options = {
-      headers: this.headers,
+      headers: force ? this.headers.set('reset-cache', 'true') : this.headers,
     };
 
     this.http

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class DomainDetailsRegistrarService {
   private registrarsUrl: string;
   private _status: BehaviorSubject<DomainRegistrarStatus>;
   private store: { status: DomainRegistrarStatus };
-  private headers: Headers;
+  private headers: HttpHeaders;
   private handleError: HandleError;
   loading: Loading;
 
@@ -29,10 +29,12 @@ export class DomainDetailsRegistrarService {
     private authenticationService: AuthenticationService
   ) {
     this.registrarsUrl = `${environment.api_url}/registrars`;
-    this.headers = {
-      'Content-Type': 'application/json',
-      Authorization: this.authenticationService.getAuthorizationHeader(),
-    };
+    this.headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append(
+        'Authorization',
+        this.authenticationService.getAuthorizationHeader()
+      );
     this.handleError = this.httpErrorHandler.createHandleError(
       'DomainDetailsRegistrar'
     );
@@ -56,13 +58,14 @@ export class DomainDetailsRegistrarService {
   /**
    * Load status for domain registrar
    *
-   * @param registrar_id string Registrar ID
-   * @param domainname string Domain name
+   * @param {string} registrar_id Registrar ID
+   * @param {string} domainname Domain name
+   * @param {boolean} force Force ignore cache
    */
-  loadStatus(registrarId: string, domain: string) {
+  loadStatus(registrarId: string, domain: string, force: boolean = false) {
     this.loading.single = true;
     const options = {
-      headers: this.headers,
+      headers: force ? this.headers.set('reset-cache', 'true') : this.headers,
     };
 
     this.http

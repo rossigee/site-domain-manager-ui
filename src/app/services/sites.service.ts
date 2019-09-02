@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Site, SitesResponse, SiteResponse } from '../models/Site';
 import { AuthenticationService } from './authentication.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Headers, Loading, HandleError } from '../models/Http';
 import { map, catchError } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export class SitesService {
   private sitesUrl: string;
   private _sites: BehaviorSubject<Site[]>;
   private store: { sites: Site[] };
-  private headers: Headers;
+  private headers: HttpHeaders;
   private currentSiteId: string;
   private handleError: HandleError;
   loading: Loading;
@@ -28,15 +28,17 @@ export class SitesService {
     this.sitesUrl = `${environment.api_url}/sites`;
     this._sites = <BehaviorSubject<Site[]>>new BehaviorSubject([]);
     this.store = { sites: [] };
-    this.headers = {
-      'Content-Type': 'application/json',
-      Authorization: this.authenticationService.getAuthorizationHeader(),
-    };
+    this.headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append(
+        'Authorization',
+        this.authenticationService.getAuthorizationHeader()
+      );
     this.loading = {
       bulk: false,
       single: false,
     };
-    this.handleError = httpErrorHandler.createHandleError('sites');
+    this.handleError = this.httpErrorHandler.createHandleError('sites');
   }
 
   /**
@@ -68,12 +70,16 @@ export class SitesService {
    * Load site by ID
    *
    * @param {string} id Site ID
+   * @param {string} force Force ignore cache
    */
-  load(id: string): void {
+  load(id: string, force: boolean = false): void {
     this.loading.single = true;
     this.currentSiteId = id;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
     this.http
-      .get<SiteResponse>(this.sitesUrl + '/' + id, { headers: this.headers })
+      .get<SiteResponse>(this.sitesUrl + '/' + id, { headers })
       .pipe(catchError(this.handleError<SiteResponse>('load')))
       .subscribe({
         next: (res: SiteResponse) => {
@@ -98,12 +104,16 @@ export class SitesService {
   /**
    * Load all (filtered by term) sites
    *
-   * @param term string default ''
+   * @param {string} term  Search term
+   * @param {boolean} force Force ignore cache
    */
-  loadAll(term: string = ''): void {
+  loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
     const options = {
-      headers: this.headers,
+      headers,
       params: new HttpParams().set('label', term.trim()),
     };
 

@@ -24,6 +24,10 @@ export class DomainDetailsComponent implements OnInit {
     return this.domainService.loading.single;
   }
 
+  refresh(): void {
+    this.domainService.load(this.id, true);
+  }
+
   ngOnInit() {
     this.domainService.load(this.id);
     this.domain$ = this.domainService.domain;
