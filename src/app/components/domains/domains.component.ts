@@ -11,11 +11,13 @@ import { Domain } from 'src/app/models/Domain';
   styleUrls: ['./domains.component.css'],
 })
 export class DomainsComponent implements OnInit {
-  searchTerm: FormControl = new FormControl('');
+  searchTerm: FormControl;
   domains$: Observable<Domain[]>;
   notready: boolean;
 
-  constructor(private domainsService: DomainsService) {}
+  constructor(private domainsService: DomainsService) {
+    this.searchTerm = new FormControl('');
+  }
 
   get loading() {
     return this.domainsService.loading.bulk;
