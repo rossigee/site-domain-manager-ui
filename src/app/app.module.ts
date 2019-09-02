@@ -17,12 +17,13 @@ import { DomainDetailsComponent } from './components/domain-details/domain-detai
 import { DomainDetailsRegistrarComponent } from './components/domain-details-registrar/domain-details-registrar.component';
 import { DomainDetailsDNSComponent } from './components/domain-details-dns/domain-details-dns.component';
 import { LoginComponent } from './components/login/login.component';
-import { RegistrarSearchComponent } from './components/registrar-search/registrar-search.component';
+
 import { RegistrarDetailsComponent } from './components/registrar-details/registrar-details.component';
 import { HttpErrorHandler } from 'src/app/services/http-error-handler.service';
 import { CacheInterceptor } from './services/cache.interceptor';
 import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
+import { RegistrarsComponent } from './components/registrars/registrars.component';
 
 @NgModule({
   declarations: [
@@ -34,11 +35,12 @@ import { DomainsComponent } from './components/domains/domains.component';
     DomainDetailsRegistrarComponent,
     DomainDetailsDNSComponent,
     LoginComponent,
-    RegistrarSearchComponent,
+    RegistrarsComponent,
     RegistrarDetailsComponent,
     ToastsContainer,
     SitesComponent,
     DomainsComponent,
+    RegistrarsComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +52,7 @@ import { DomainsComponent } from './components/domains/domains.component';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
+    CacheInterceptor,
     HttpErrorHandler,
   ],
   bootstrap: [AppComponent],

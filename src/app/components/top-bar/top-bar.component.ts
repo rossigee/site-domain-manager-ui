@@ -6,9 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./top-bar.component.css'],
 })
 export class TopBarComponent implements OnInit {
-  isCollapsed: boolean = true;
+  isCollapsed: boolean;
 
-  constructor() {}
+  constructor() {
+    this.isCollapsed = true;
+  }
 
   ngOnInit() {}
 }

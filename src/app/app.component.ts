@@ -23,6 +23,10 @@ export class AppComponent {
     );
   }
 
+  get topBar(): boolean {
+    return !this.router.url.includes('login');
+  }
+
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);

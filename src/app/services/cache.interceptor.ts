@@ -13,6 +13,19 @@ import { tap, shareReplay } from 'rxjs/operators';
 export class CacheInterceptor implements HttpInterceptor {
   private cache = new Map<string, any>();
 
+  /**
+   * Clear HTTP cache. If entity param not passed will clear whole cache
+   *
+   * @param {string} entity Entity to remove.
+   */
+  clear(entity: string = ''): void {
+    if (!entity) {
+      this.cache.clear();
+    } else {
+      this.cache.delete(entity);
+    }
+  }
+
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler

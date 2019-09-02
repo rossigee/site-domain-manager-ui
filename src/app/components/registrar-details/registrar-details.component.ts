@@ -1,109 +1,55 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { RegistrarDetailsService } from 'src/app/services/registrar-details.service';
 import { Registrar } from 'src/app/models/Registrar';
-import { ToastService } from 'src/app/services/toast.service';
+import { Observable } from 'rxjs';
+import { RegistrarsService } from 'src/app/services/registrars.service';
 
 @Component({
   selector: 'app-registrar-details',
   templateUrl: './registrar-details.component.html',
   styleUrls: ['./registrar-details.component.css'],
-  providers: [RegistrarDetailsService],
+  providers: [RegistrarsService],
 })
-export class RegistrarDetailsComponent implements OnInit, AfterViewInit {
+export class RegistrarDetailsComponent implements OnInit {
   id: string;
-  registrar: Registrar;
-  loading: boolean = false;
-  uploading: boolean = false;
-  refreshing: boolean = false;
-  fileToUpload: File = null;
+  registrar$: Observable<Registrar>;
+  notready: boolean;
+  fileToUpload: File;
 
   constructor(
     route: ActivatedRoute,
-    private registrarService: RegistrarDetailsService,
-    private toastService: ToastService
+    private registrarService: RegistrarsService
   ) {
     this.id = route.snapshot.paramMap.get('registrarId');
   }
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    setTimeout(() => (this.loading = true));
-
-    this.refresh();
+  ngOnInit() {
+    this.registrarService.load(this.id);
+    this.registrar$ = this.registrarService.registrar;
   }
 
-  handleCSVFileInput(files: FileList) {
-    this.uploading = true;
-    this.registrarService.postCSVFile(this.id, files.item(0)).subscribe(
-      data => {
-        this.uploading = false;
-        if (data.status == 'ok') {
-          this.toastService.notice(
-            'Upload successful. ' + data.records_read + ' records processed.'
-          );
-        }
-        this.refresh();
-      },
-      error => {
-        this.uploading = false;
-        this.toastService.error(error);
-      }
-    );
+  get loading(): boolean {
+    return this.registrarService.loading.single;
   }
 
-  handleJSONFileInput(files: FileList) {
-    this.uploading = true;
-    this.registrarService.postJSONFile(this.id, files.item(0)).subscribe(
-      data => {
-        this.uploading = false;
-        if (data.status == 'ok') {
-          this.toastService.notice(
-            'Upload successful. ' + data.records_read + ' records processed.'
-          );
-        }
-        this.refresh();
-      },
-      error => {
-        this.uploading = false;
-        this.toastService.error(error);
-      }
-    );
+  get refreshing(): boolean {
+    return this.registrarService.handlingState.refreshing;
   }
 
-  refreshFromAPI() {
-    this.refreshing = true;
-    this.registrarService.refreshFromAPI(this.id).subscribe(
-      data => {
-        this.refreshing = false;
-        if (data.status == 'ok') {
-          this.toastService.notice(
-            'Refresh successful. ' + data.records_read + ' records updated.'
-          );
-        }
-        this.refresh();
-      },
-      error => {
-        this.refreshing = false;
-        this.toastService.error(error);
-      }
-    );
+  get uploading(): boolean {
+    return this.registrarService.handlingState.uploading;
   }
 
-  refresh = function() {
-    this.registrarService.getRegistrar(this.id).subscribe(
-      resp => {
-        this.loading = false;
-        //this.fileToUpload = null;
-        this.registrar = resp; //['registrar'];
-      },
-      error => {
-        this.loading = false;
-        //this.fileToUpload = null;
-        this.toastService.error(error);
-      }
-    );
-  };
+  csvInput(files: FileList) {
+    this.registrarService.uploadFile(files.item(0), 'csvfile');
+  }
+
+  jsonInput(files: FileList) {
+    this.registrarService.uploadFile(files.item(0), 'jsonfile');
+  }
+
+  refreshFromApi() {
+    this.registrarService.refreshFromAPI();
+  }
 }

@@ -4,11 +4,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { SiteDetailsComponent } from './components/site-details/site-details.component';
 import { DomainDetailsComponent } from './components/domain-details/domain-details.component';
-import { RegistrarSearchComponent } from './components/registrar-search/registrar-search.component';
+
 import { RegistrarDetailsComponent } from './components/registrar-details/registrar-details.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
+import { RegistrarsComponent } from './components/registrars/registrars.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'registrars',
-    component: RegistrarSearchComponent,
+    component: RegistrarsComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -10,11 +10,13 @@ import { SitesService } from 'src/app/services/sites.service';
   styleUrls: ['./sites.component.css'],
 })
 export class SitesComponent implements OnInit {
-  searchTerm = new FormControl('');
+  searchTerm: FormControl;
   sites$: Observable<Site[]>;
   notready: boolean;
 
-  constructor(private sitesService: SitesService) {}
+  constructor(private sitesService: SitesService) {
+    this.searchTerm = new FormControl('');
+  }
 
   /**
    * Get loading state from service

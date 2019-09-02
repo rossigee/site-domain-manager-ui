@@ -14,7 +14,7 @@ import { HttpErrorHandler } from './http-error-handler.service';
 export class SitesService {
   private sitesUrl: string;
   private _sites: BehaviorSubject<Site[]>;
-  private store: SitesResponse;
+  private store: { sites: Site[] };
   private headers: Headers;
   private currentSiteId: string;
   private handleError: HandleError;
@@ -46,6 +46,9 @@ export class SitesService {
     return this._sites.asObservable();
   }
 
+  /**
+   * Getter for single Site
+   */
   get site(): Observable<Site> {
     this.loading.single = true;
     return this._sites.pipe(
@@ -64,7 +67,7 @@ export class SitesService {
   /**
    * Load site by ID
    *
-   * @param id string
+   * @param {string} id Site ID
    */
   load(id: string): void {
     this.loading.single = true;
@@ -106,7 +109,7 @@ export class SitesService {
 
     this.http
       .get<SitesResponse>(this.sitesUrl, options)
-      .pipe(catchError(this.handleError<SiteResponse>('loadAll')))
+      .pipe(catchError(this.handleError<SitesResponse>('loadAll')))
       .subscribe({
         next: (res: SitesResponse) => {
           this.store = res;

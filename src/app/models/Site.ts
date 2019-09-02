@@ -8,7 +8,7 @@ export interface Site {
 }
 
 export interface SitesResponse {
-  [sites: string]: Site[];
+  sites: Site[];
 }
 
 export interface SiteResponse {
