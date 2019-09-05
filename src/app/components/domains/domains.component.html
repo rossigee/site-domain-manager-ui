@@ -19,6 +19,9 @@
           <th>#</th>
           <th>Name</th>
           <th>Registrar</th>
+          <th>DNS</th>
+          <th>WAF</th>
+          <th>Hosting</th>
         </tr>
       </thead>
       <!--Table head-->
@@ -32,6 +35,9 @@
           <th scope="row">{{ domain.id }}</th>
           <td>{{ domain.name }}</td>
           <td>{{ domain.registrar.label }}</td>
+          <td><span *ngIf="domain.dns">{{ domain.dns.label }}</span></td>
+          <td><span *ngIf="domain.waf">{{ domain.waf.label }}</span></td>
+          <td><span *ngIf="domain.site">{{ domain.site.label }}</span></td>
         </tr>
       </tbody>
       <!--Table body-->
