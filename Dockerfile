@@ -14,7 +14,7 @@ RUN apt-get update && \
 ADD . /build
 WORKDIR /build
 RUN npm install -g @angular/cli npm@latest && /usr/local/bin/npm install
-RUN ng build --prod
+RUN /usr/local/bin/ng build --prod
 
 FROM ubuntu:disco
 
@@ -37,10 +37,16 @@ RUN rm -f /etc/nginx/sites-enabled/*
 COPY docker/etc/nginx.conf /etc/nginx/sites-available/sdmgr-ui.conf
 RUN ln -sf /etc/nginx/sites-available/sdmgr-ui.conf /etc/nginx/sites-enabled/sdmgr-ui.conf
 
+# Tell nginx not to daemonize
+RUN echo "daemon off;" >>/etc/nginx/nginx.conf
+
 # Put our static docroot into place
 COPY --from=build /build/dist /srv
 WORKDIR /srv/sdmgr-ui
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY docker/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx"]
