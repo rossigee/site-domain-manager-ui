@@ -19,7 +19,7 @@ import { ToastService } from './toast.service';
 })
 export class RegistrarsService {
   private registrarsUrl: string;
-  private _registrars: BehaviorSubject<Registrar[]>;
+  private registrars$: BehaviorSubject<Registrar[]>;
   private store: { registrars: Registrar[] };
   private headers: HttpHeaders;
   private handleError: HandleError;
@@ -27,6 +27,7 @@ export class RegistrarsService {
   handlingState: {
     refreshing: boolean;
     uploading: boolean;
+    creating: boolean;
   };
   loading: Loading;
 
@@ -38,7 +39,7 @@ export class RegistrarsService {
   ) {
     this.registrarsUrl = `${environment.api_url}/registrars`;
     this.handleError = this.httpErrorHandler.createHandleError('registrars');
-    this._registrars = <BehaviorSubject<Registrar[]>>new BehaviorSubject([]);
+    this.registrars$ = new BehaviorSubject([]) as BehaviorSubject<Registrar[]>;
     this.store = { registrars: [] };
     this.headers = new HttpHeaders()
       .append('Content-Type', 'application/json')
@@ -53,6 +54,7 @@ export class RegistrarsService {
     this.handlingState = {
       refreshing: false,
       uploading: false,
+      creating: false,
     };
   }
 
@@ -60,7 +62,7 @@ export class RegistrarsService {
    * Getter for Registrars
    */
   get registrars(): Observable<Registrar[]> {
-    return this._registrars.asObservable();
+    return this.registrars$.asObservable();
   }
 
   /**
@@ -68,11 +70,11 @@ export class RegistrarsService {
    */
   get registrar(): Observable<Registrar> {
     this.loading.single = true;
-    return this._registrars.pipe(
+    return this.registrars$.pipe(
       map((registrars: Registrar[]) =>
         registrars.find((registrar: Registrar) => {
           const condition =
-            registrar && parseInt(this.currentRegistrarId) === registrar.id;
+            registrar && parseInt(this.currentRegistrarId, 10) === registrar.id;
           if (condition) {
             this.loading.single = false;
           }
@@ -90,7 +92,7 @@ export class RegistrarsService {
   loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
     const options = {
-      headers: this.headers,
+      headers: !force ? this.headers : this.headers.set('reset-cache', 'true'),
       params: new HttpParams().set('label', term.trim()),
     };
 
@@ -100,8 +102,27 @@ export class RegistrarsService {
       .subscribe({
         next: (res: RegistrarsResponse) => {
           this.store = res;
-          this._registrars.next(Object.assign({}, this.store).registrars);
+          this.registrars$.next(Object.assign({}, this.store).registrars);
           this.loading.bulk = false;
+        },
+      });
+  }
+
+  create(data) {
+    this.handlingState.creating = true;
+    const url = `${this.registrarsUrl}/someurl`;
+    const formData: FormData = new FormData();
+    for (const i in data) {
+      if (data.hasOwnProperty(i)) {
+        formData.append(i, data[i]);
+      }
+    }
+    this.http
+      .post(url, formData)
+      .pipe(catchError(this.handleError<Registrar>('create')))
+      .subscribe({
+        next: res => {
+          console.log(res);
         },
       });
   }
@@ -109,10 +130,10 @@ export class RegistrarsService {
   /**
    * Load registrar by ID
    *
-   * @param {string} id Registrar ID
+   * @param id Registrar ID
    */
   load(id: string, force: boolean = false): void {
-    const url = this.registrarsUrl + '/' + id;
+    const url = `${this.registrarsUrl}/${id}`;
     this.loading.single = true;
     this.currentRegistrarId = id;
     const headers = !force
@@ -136,7 +157,7 @@ export class RegistrarsService {
             this.store.registrars.push(res);
           }
 
-          this._registrars.next(Object.assign({}, this.store).registrars);
+          this.registrars$.next(Object.assign({}, this.store).registrars);
           this.loading.single = false;
         },
       });
@@ -145,8 +166,8 @@ export class RegistrarsService {
   /**
    * Upload file to backend
    *
-   * @param {File} file File to upload
-   * @param {string} type File type to upload
+   * @param file File to upload
+   * @param type File type to upload
    */
   uploadFile(file: File, type: string) {
     this.handlingState.uploading = true;
@@ -160,7 +181,7 @@ export class RegistrarsService {
       .pipe(catchError(this.handleError<PostResponse>('uploadFile')))
       .subscribe({
         next: (res: PostResponse) => {
-          if (res.status == 'ok') {
+          if (res.status === 'ok') {
             this.toastService.notice(
               `Upload successful. ${res.records_read} records processed.`
             );
@@ -174,16 +195,15 @@ export class RegistrarsService {
   /**
    * GET refresh by API for registrar by id
    *
-   * @param {string} id Registrar ID
+   * @param id Registrar ID
    */
   refreshFromAPI(): void {
-    const headers = Object.assign({}, this.headers);
-    delete headers['Content-Type'];
+    const headers = this.headers.delete('Content-Type');
 
     const endpoint = `${this.registrarsUrl}/${this.currentRegistrarId}/refresh`;
     this.http.get<PostResponse>(endpoint, { headers }).pipe(
       map(res => {
-        if (res.status == 'ok') {
+        if (res.status === 'ok') {
           this.toastService.notice(
             `Refresh successful. ${res.records_read} records updated.`
           );

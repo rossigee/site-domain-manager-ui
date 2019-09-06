@@ -1,0 +1,77 @@
+<div class="add-btn-container">
+  <button class="btn btn-primary btn-add" (click)="open(content)">
+    Add Registrar
+  </button>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Add new registrar</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="newRegistrarForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="label" class="d-none">Label</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="label"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': submitted && errors.label
+          }"
+          placeholder="Label"
+        />
+        <div *ngIf="submitted && errors.label" class="invalid-feedback">
+          <div *ngIf="errors.label.required">
+            Label is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="agent-input" class="d-none">Agent</label>
+        <select
+          class="custom-select"
+          [ngClass]="{
+            'is-invalid': submitted && errors.agent
+          }"
+          id="agent-input"
+          formControlName="agent"
+        >
+          <option value="" disabled hidden selected>Select agent</option>
+          <ng-container *ngFor="let agent of agents">
+            <option value="{{ agent.value }}">{{ agent.label }}</option>
+          </ng-container>
+        </select>
+        <div *ngIf="submitted && errors.agent" class="invalid-feedback d-block">
+          <div *ngIf="errors.agent.required">
+            Label is required
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <img
+      *ngIf="creating"
+      class="pl-3"
+      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="addRegistrar()"
+      [disabled]="creating"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>

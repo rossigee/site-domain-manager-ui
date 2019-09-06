@@ -24,6 +24,7 @@ import { CacheInterceptor } from './services/cache.interceptor';
 import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
 import { RegistrarsComponent } from './components/registrars/registrars.component';
+import { CreateRegistrarComponent } from './components/registrars/create-registrar/create-registrar.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { RegistrarsComponent } from './components/registrars/registrars.componen
     SitesComponent,
     DomainsComponent,
     RegistrarsComponent,
+    CreateRegistrarComponent,
   ],
   imports: [
     BrowserModule,
