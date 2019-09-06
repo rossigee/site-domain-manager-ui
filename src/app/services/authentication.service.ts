@@ -23,7 +23,7 @@ export class AuthenticationService {
   }
 
   public getAuthorizationHeader(): string {
-    var token = JSON.parse(localStorage.getItem('token'));
+    const token = JSON.parse(localStorage.getItem('token'));
     return `Bearer ${token.access_token}`;
   }
 

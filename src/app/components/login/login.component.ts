@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -63,9 +64,9 @@ export class LoginComponent implements OnInit {
         error => {
           console.log(error);
           const message =
-            error.error instanceof ErrorEvent
-              ? error.error.message
-              : `server returned code ${error.status} with body "${error.error}"`;
+            error instanceof HttpErrorResponse
+              ? error.error.detail
+              : `server returned code ${error.status} with body "${error.message}"`;
           this.toastService.error(message);
           this.loading = false;
         }
