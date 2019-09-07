@@ -26,14 +26,14 @@ export class CreateRegistrarComponent implements OnInit {
   ) {
     // TODO: Get this data from API
     this.agents = [
-      { label: 'Marcaria', value: 'marcaria' },
-      { label: 'Namecheap', value: 'namecheap' },
-      { label: 'IONOS', value: 'ionos' },
-      { label: 'United Domains', value: 'united_domains' },
+      { label: 'Marcaria', value: 'sdmgr.registrar.marcaria' },
+      { label: 'Namecheap', value: 'sdmgr.registrar.namecheap' },
+      { label: 'IONOS', value: 'sdmgr.registrar.ionos' },
+      { label: 'United Domains', value: 'sdmgr.registrar.uniteddomains' },
     ];
     this.newRegistrarForm = this.formBuilder.group({
       label: ['', Validators.required],
-      agent: ['', Validators.required],
+      agent_module: ['', Validators.required],
     });
   }
 
@@ -42,7 +42,7 @@ export class CreateRegistrarComponent implements OnInit {
   get errors(): { [key: string]: ValidationErrors } {
     return {
       label: this.newRegistrarForm.controls.label.errors,
-      agent: this.newRegistrarForm.controls.agent.errors,
+      agent_module: this.newRegistrarForm.controls.agent.errors,
     };
   }
 

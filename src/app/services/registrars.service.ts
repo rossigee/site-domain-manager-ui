@@ -110,15 +110,11 @@ export class RegistrarsService {
 
   create(data) {
     this.handlingState.creating = true;
-    const url = `${this.registrarsUrl}/someurl`;
-    const formData: FormData = new FormData();
-    for (const i in data) {
-      if (data.hasOwnProperty(i)) {
-        formData.append(i, data[i]);
-      }
-    }
+    const options = {
+      headers: this.headers
+    };
     this.http
-      .post(url, formData)
+      .post(this.registrarsUrl, data, options)
       .pipe(catchError(this.handleError<Registrar>('create')))
       .subscribe({
         next: res => {
