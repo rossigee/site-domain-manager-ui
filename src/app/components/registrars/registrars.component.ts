@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegistrarsService } from 'src/app/services/registrars.service';
 import { Observable } from 'rxjs';
 import { Registrar } from 'src/app/models/Registrar';

@@ -17,7 +17,7 @@ import { AuthenticationService } from './authentication.service';
 @Injectable()
 export class DomainDetailsRegistrarService {
   private registrarsUrl: string;
-  private _status: BehaviorSubject<DomainRegistrarStatus>;
+  private status$: BehaviorSubject<DomainRegistrarStatus>;
   private store: { status: DomainRegistrarStatus };
   private headers: HttpHeaders;
   private handleError: HandleError;
@@ -42,9 +42,9 @@ export class DomainDetailsRegistrarService {
       single: false,
       bulk: false,
     };
-    this._status = <BehaviorSubject<DomainRegistrarStatus>>(
-      new BehaviorSubject({})
-    );
+    this.status$ = new BehaviorSubject({}) as BehaviorSubject<
+      DomainRegistrarStatus
+    >;
     this.store = { status: {} as DomainRegistrarStatus };
   }
 
@@ -52,15 +52,15 @@ export class DomainDetailsRegistrarService {
    * Get status from store
    */
   get status(): Observable<DomainRegistrarStatus> {
-    return this._status.asObservable();
+    return this.status$.asObservable();
   }
 
   /**
    * Load status for domain registrar
    *
-   * @param {string} registrar_id Registrar ID
-   * @param {string} domainname Domain name
-   * @param {boolean} force Force ignore cache
+   * @param registrar_id Registrar ID
+   * @param domainname Domain name
+   * @param force Force ignore cache
    */
   loadStatus(registrarId: string, domain: string, force: boolean = false) {
     this.loading.single = true;
@@ -82,7 +82,7 @@ export class DomainDetailsRegistrarService {
         next: (res: DomainRegistrarStatusResponse) => {
           const { status } = res;
           this.store.status = status;
-          this._status.next(Object.assign({}, this.store).status);
+          this.status$.next(Object.assign({}, this.store).status);
           this.loading.single = false;
         },
       });

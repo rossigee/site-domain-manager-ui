@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  //api_url: 'https://sdmgr.local',
+  // api_url: 'https://sdmgr.local',
   api_url: 'http://localhost:8000',
 };
 

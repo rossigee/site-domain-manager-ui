@@ -23,7 +23,7 @@ export class AuthenticationService {
   }
 
   public getAuthorizationHeader(): string {
-    var token = JSON.parse(localStorage.getItem('token'));
+    const token = JSON.parse(localStorage.getItem('token'));
     return `Bearer ${token.access_token}`;
   }
 
@@ -44,7 +44,7 @@ export class AuthenticationService {
         map(token => {
           if (token && token.access_token) {
             localStorage.setItem('token', JSON.stringify(token));
-            //this.currentUserSubject.next(user);
+            // this.currentUserSubject.next(user);
           }
           return token;
         })
@@ -54,6 +54,6 @@ export class AuthenticationService {
   logout() {
     // remove token from local storage to log user out
     localStorage.removeItem('token');
-    //this.currentUserSubject.next(null);
+    // this.currentUserSubject.next(null);
   }
 }

@@ -1,0 +1,7 @@
+.add-btn-container {
+  overflow: hidden;
+  padding: 12px;
+}
+.btn-add {
+  float: right;
+}
