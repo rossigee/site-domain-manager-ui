@@ -69,7 +69,6 @@ export class RegistrarsService {
    * Getter for single registrar
    */
   get registrar(): Observable<Registrar> {
-    this.loading.single = true;
     return this.registrars$.pipe(
       map((registrars: Registrar[]) =>
         registrars.find((registrar: Registrar) => {
