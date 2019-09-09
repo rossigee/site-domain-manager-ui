@@ -101,28 +101,23 @@ export class RegistrarsService {
       .pipe(catchError(this.handleError<RegistrarsResponse>('loadAll')))
       .subscribe({
         next: (res: RegistrarsResponse) => {
-          this.store = res;
+          this.store.registrars = res.registrars;
           this.registrars$.next(Object.assign({}, this.store).registrars);
           this.loading.bulk = false;
         },
       });
   }
 
-  create(data) {
+  create(label, agent) {
     this.handlingState.creating = true;
-    const url = `${this.registrarsUrl}/someurl`;
-    const formData: FormData = new FormData();
-    for (const i in data) {
-      if (data.hasOwnProperty(i)) {
-        formData.append(i, data[i]);
-      }
-    }
+    const url = this.registrarsUrl;
     this.http
-      .post(url, formData)
+      .post(url, { label, agent_module: agent }, { headers: this.headers })
       .pipe(catchError(this.handleError<Registrar>('create')))
       .subscribe({
-        next: res => {
-          console.log(res);
+        next: (res: Registrar) => {
+          this.load(`${res.id}`);
+          this.handlingState.creating = false;
         },
       });
   }
