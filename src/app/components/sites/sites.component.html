@@ -1,52 +1,44 @@
-<label>
-  Name:
-  <input type="text" [formControl]="searchTerm" (keyup.enter)="search()" />
-</label>
-<p>
-  <button (click)="search()">Search</button>
-</p>
+<!-- Search sites -->
+<div class="container">
+  <div class="row my-3 ml-0 input-group">
+    <label for="search-sites" class="d-none">Search</label>
+    <input class="form-control" type="text" name="search-sites" [formControl]="searchTerm" (keyup.enter)="search()" placeholder="Search" >
+    <div class="input-group-append">
+      <button class="btn btn-success" (click)="search()">Search</button>
+    </div>
+  </div>
+</div>
 
-<div
-  class="container"
-  *ngIf="!loading && sites$ | async as sites; else notready"
->
-  <!--Table-->
-  <table
-    class="table table-hover table-fixed"
-    *ngIf="sites.length; else notready"
-  >
-    <!--Table head-->
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Label</th>
-        <th>Hosting</th>
-      </tr>
-    </thead>
-    <!--Table head-->
-
-    <!--Table body-->
-    <tbody>
-      <tr
-        *ngFor="let site of sites; index as siteId"
-        routerLink="/sites/{{ site.id }}"
-      >
-        <th scope="row">{{ site.id }}</th>
-        <td>{{ site.label }}</td>
-        <td>{{ site.hosting.label }}</td>
-      </tr>
-    </tbody>
-    <!--Table body-->
-  </table>
-  <!--Table-->
+<!-- Search results container -->
+<div class="container" *ngIf="!loading && sites$ | async as sites; else notready">
+  <div class="table-responsive">
+    <!-- Search results table -->
+    <table class="table table-hover table-fixed table-striped" *ngIf="sites.length; else notready">
+      <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Url</th>
+          <th>Hosting</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let site of sites; index as siteId" routerLink="/sites/{{ site.id }}">
+          <th scope="row">
+            <span class="badge badge-secondary">
+              {{ site.id }}
+            </span>
+          </th>
+          <td>{{ site.label }}</td>
+          <td>{{ site.hosting.label }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <ng-template #notready>
   <div *ngIf="loading">
-    <img
-      class="pl-3"
-      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
-    />
+    <img class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
   </div>
   <p *ngIf="!loading">No sites found.</p>
 </ng-template>
