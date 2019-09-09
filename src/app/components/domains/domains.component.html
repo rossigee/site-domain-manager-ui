@@ -1,16 +1,26 @@
-<!-- Search domains -->
 <div class="container">
   <div class="row my-3 ml-0 input-group">
     <label for="search-domains" class="d-none">Search domains</label>
-    <input class="form-control" type="text" name="search-domains" [formControl]="searchTerm" (keyup.enter)="search()" placeholder="Domain name"/>
+    <input
+      class="form-control"
+      type="text"
+      name="search-domains"
+      [formControl]="searchTerm"
+      (keyup.enter)="search()"
+      placeholder="Domain name"
+    />
     <div class="input-group-append">
-      <button class="btn btn-success"(click)="search()">Search</button>
+      <button class="btn btn-success" (click)="search()">Search</button>
     </div>
   </div>
+  <app-create-domain></app-create-domain>
 </div>
 
 <!-- Search results container -->
-<div class="container" *ngIf="!loading && domains$ | async as domains; else notready">
+<div
+  class="container"
+  *ngIf="!loading && domains$ | async as domains; else notready"
+>
   <ng-container *ngIf="domains.length; else notready">
     <!-- Search results table -->
     <div class="table-responsive">
@@ -26,13 +36,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let domain of domains; index as domainId" routerLink="/domains/{{ domain.id }}">
-            <th scope="row"><span class="badge badge-secondary">{{ domain.id }}</span></th>
+          <tr
+            *ngFor="let domain of domains; index as domainId"
+            routerLink="/domains/{{ domain.id }}"
+          >
+            <th scope="row">
+              <span class="badge badge-secondary">{{ domain.id }}</span>
+            </th>
             <td>{{ domain.name }}</td>
             <td>{{ domain.registrar.label }}</td>
-            <td><span *ngIf="domain.dns">{{ domain.dns.label }}</span></td>
-            <td><span *ngIf="domain.waf">{{ domain.waf.label }}</span></td>
-            <td><span *ngIf="domain.site">{{ domain.site.label }}</span></td>
+            <td>
+              <span *ngIf="domain.dns">{{ domain.dns.label }}</span>
+            </td>
+            <td>
+              <span *ngIf="domain.waf">{{ domain.waf.label }}</span>
+            </td>
+            <td>
+              <span *ngIf="domain.site">{{ domain.site.label }}</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -42,7 +63,10 @@
 
 <ng-template #notready>
   <div *ngIf="loading">
-    <img class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+    <img
+      class="pl-3"
+      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
   </div>
   <p *ngIf="!loading">No domains found.</p>
 </ng-template>
