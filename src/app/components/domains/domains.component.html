@@ -1,57 +1,63 @@
 <div class="container">
-  <label>
-    Name:
-    <input type="text" [formControl]="searchTerm" (keyup.enter)="search()" />
-  </label>
-  <p>
-    <button (click)="search()">Search</button>
-    <app-create-domain></app-create-domain>
-  </p>
+  <div class="row my-3 ml-0 input-group">
+    <label for="search-domains" class="d-none">Search domains</label>
+    <input
+      class="form-control"
+      type="text"
+      name="search-domains"
+      [formControl]="searchTerm"
+      (keyup.enter)="search()"
+      placeholder="Domain name"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-success" (click)="search()">Search</button>
+    </div>
+  </div>
+  <app-create-domain></app-create-domain>
 </div>
 
+<!-- Search results container -->
 <div
   class="container"
   *ngIf="!loading && domains$ | async as domains; else notready"
 >
   <ng-container *ngIf="domains.length; else notready">
-    <!--Table-->
-    <table class="table table-hover table-fixed">
-      <!--Table head-->
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Registrar</th>
-          <th>DNS</th>
-          <th>WAF</th>
-          <th>Hosting</th>
-        </tr>
-      </thead>
-      <!--Table head-->
-
-      <!--Table body-->
-      <tbody>
-        <tr
-          *ngFor="let domain of domains; index as domainId"
-          routerLink="/domains/{{ domain.id }}"
-        >
-          <th scope="row">{{ domain.id }}</th>
-          <td>{{ domain.name }}</td>
-          <td>{{ domain.registrar.label }}</td>
-          <td>
-            <span *ngIf="domain.dns">{{ domain.dns.label }}</span>
-          </td>
-          <td>
-            <span *ngIf="domain.waf">{{ domain.waf.label }}</span>
-          </td>
-          <td>
-            <span *ngIf="domain.site">{{ domain.site.label }}</span>
-          </td>
-        </tr>
-      </tbody>
-      <!--Table body-->
-    </table>
-    <!--Table-->
+    <!-- Search results table -->
+    <div class="table-responsive">
+      <table class="table table-hover table-fixed table-striped">
+        <thead class="thead-light">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Registrar</th>
+            <th>DNS</th>
+            <th>WAF</th>
+            <th>Hosting</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let domain of domains; index as domainId"
+            routerLink="/domains/{{ domain.id }}"
+          >
+            <th scope="row">
+              <span class="badge badge-secondary">{{ domain.id }}</span>
+            </th>
+            <td>{{ domain.name }}</td>
+            <td>{{ domain.registrar.label }}</td>
+            <td>
+              <span *ngIf="domain.dns">{{ domain.dns.label }}</span>
+            </td>
+            <td>
+              <span *ngIf="domain.waf">{{ domain.waf.label }}</span>
+            </td>
+            <td>
+              <span *ngIf="domain.site">{{ domain.site.label }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </ng-container>
 </div>
 

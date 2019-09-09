@@ -41,10 +41,10 @@
         <select
           class="custom-select"
           [ngClass]="{
-            'is-invalid': submitted && errors.agent
+            'is-invalid': submitted && errors.agent_module
           }"
           id="agent-input"
-          formControlName="agent"
+          formControlName="agent_module"
         >
           <option value="" disabled hidden selected>Select agent</option>
           <ng-container *ngFor="let agent of agents | async as list">

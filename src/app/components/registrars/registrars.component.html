@@ -8,45 +8,30 @@
 </p>
 -->
 
-<div
-  class="container"
-  *ngIf="!loading && registrars$ | async as registrars; else notready"
->
-  <app-create-registrar></app-create-registrar>
-  <ng-container *ngIf="registrars.length > 0; else notready">
-    <!--Table-->
-    <table class="table table-hover table-fixed">
-      <!--Table head-->
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Label</th>
-        </tr>
-      </thead>
-      <!--Table head-->
-
-      <!--Table body-->
-      <tbody>
-        <tr
-          *ngFor="let registrar of registrars; index as registrarId"
-          routerLink="/registrars/{{ registrar.id }}"
-        >
-          <th scope="row">{{ registrar.id }}</th>
-          <td>{{ registrar.label }}</td>
-        </tr>
-      </tbody>
-      <!--Table body-->
-    </table>
-    <!--Table-->
-  </ng-container>
+  <!-- Search results container -->
+  <div class="container my-3" *ngIf="!loading && registrars$ | async as registrars; else notready">
+    <div class="table-responsive">
+      <!-- Search results table -->
+      <table class="table table-hover table-fixed table-striped">
+        <thead class="thead-light">
+          <tr>
+            <th>#</th>
+            <th>Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let registrar of registrars; index as registrarId" routerLink="/registrars/{{ registrar.id }}">
+            <th scope="row"><span class="badge badge-secondary">{{ registrar.id }}</span></th>
+            <td>{{ registrar.label }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 </div>
 
 <ng-template #notready>
   <div *ngIf="loading">
-    <img
-      class="pl-3"
-      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
-    />
+    <img class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
   </div>
   <p *ngIf="!loading">No registrars found.</p>
 </ng-template>
