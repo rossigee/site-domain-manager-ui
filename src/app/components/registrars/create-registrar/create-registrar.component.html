@@ -47,13 +47,13 @@
           formControlName="agent_module"
         >
           <option value="" disabled hidden selected>Select agent</option>
-          <ng-container *ngFor="let agent of agents">
-            <option value="{{ agent.value }}">{{ agent.label }}</option>
+          <ng-container *ngFor="let agent of agents | async as list">
+            <option value="{{ agent.class }}">{{ agent.label }}</option>
           </ng-container>
         </select>
         <div *ngIf="submitted && errors.agent" class="invalid-feedback d-block">
           <div *ngIf="errors.agent.required">
-            Label is required
+            Agent needs to be selected
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
     <button
       type="button"
       class="btn btn-outline-dark"
-      (click)="addRegistrar()"
+      (click)="addRegistrar(modal)"
       [disabled]="creating"
     >
       Save

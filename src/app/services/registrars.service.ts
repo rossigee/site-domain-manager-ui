@@ -69,7 +69,6 @@ export class RegistrarsService {
    * Getter for single registrar
    */
   get registrar(): Observable<Registrar> {
-    this.loading.single = true;
     return this.registrars$.pipe(
       map((registrars: Registrar[]) =>
         registrars.find((registrar: Registrar) => {
@@ -101,24 +100,23 @@ export class RegistrarsService {
       .pipe(catchError(this.handleError<RegistrarsResponse>('loadAll')))
       .subscribe({
         next: (res: RegistrarsResponse) => {
-          this.store = res;
+          this.store.registrars = res.registrars;
           this.registrars$.next(Object.assign({}, this.store).registrars);
           this.loading.bulk = false;
         },
       });
   }
 
-  create(data) {
+  create(label, agent) {
     this.handlingState.creating = true;
-    const options = {
-      headers: this.headers
-    };
+    const url = this.registrarsUrl;
     this.http
-      .post(this.registrarsUrl, data, options)
+      .post(url, { label, agent_module: agent }, { headers: this.headers })
       .pipe(catchError(this.handleError<Registrar>('create')))
       .subscribe({
-        next: res => {
-          console.log(res);
+        next: (res: Registrar) => {
+          this.load(`${res.id}`);
+          this.handlingState.creating = false;
         },
       });
   }

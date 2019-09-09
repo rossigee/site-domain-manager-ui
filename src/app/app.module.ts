@@ -25,6 +25,7 @@ import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
 import { RegistrarsComponent } from './components/registrars/registrars.component';
 import { CreateRegistrarComponent } from './components/registrars/create-registrar/create-registrar.component';
+import { CreateDomainComponent } from './components/domains/create-domain/create-domain.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CreateRegistrarComponent } from './components/registrars/create-registr
     DomainsComponent,
     RegistrarsComponent,
     CreateRegistrarComponent,
+    CreateDomainComponent,
   ],
   imports: [
     BrowserModule,
