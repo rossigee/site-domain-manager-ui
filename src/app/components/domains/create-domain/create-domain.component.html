@@ -1,8 +1,6 @@
-<div class="add-btn-container">
-  <button class="btn btn-primary btn-add" (click)="open(content)">
-    Add Domain
-  </button>
-</div>
+<button class="btn btn-primary btn-add" (click)="open(content)">
+  Add Domain
+</button>
 
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -16,7 +14,102 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body"></div>
+  <div class="modal-body">
+    <form [formGroup]="domainForm" (ngSubmit)="onSubmit()">
+      <!-- Name input -->
+      <div class="form-group">
+        <label for="name" class="d-none">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': submitted && errors.name
+          }"
+          placeholder="Name"
+        />
+        <div *ngIf="submitted && errors.name" class="invalid-feedback">
+          <div *ngIf="errors.name.required">
+            Name is required
+          </div>
+        </div>
+      </div>
+      <!-- Name input end -->
+      <!-- Registrar input -->
+      <div class="form-group">
+        <label for="registrar-input" class="d-none">Registrar</label>
+        <select
+          class="custom-select"
+          [ngClass]="{
+            'is-invalid': submitted && errors.registrar
+          }"
+          id="registrar-input"
+          formControlName="registrar"
+        >
+          <option value="" disabled hidden selected>Select registrar</option>
+          <ng-container *ngFor="let registrar of registrar$ | async as list">
+            <option value="{{ registrar.class }}">{{ registrar.label }}</option>
+          </ng-container>
+        </select>
+        <div
+          *ngIf="submitted && errors.registrar"
+          class="invalid-feedback d-block"
+        >
+          <div *ngIf="errors.registrar.required">
+            Registrar needs to be selected
+          </div>
+        </div>
+      </div>
+      <!-- Registrar input end -->
+      <!-- Dns input -->
+      <div class="form-group">
+        <label for="dns-input" class="d-none">dns</label>
+        <select
+          class="custom-select"
+          [ngClass]="{
+            'is-invalid': submitted && errors.dns
+          }"
+          id="dns-input"
+          formControlName="dns"
+        >
+          <option value="" disabled hidden selected>Select Dns</option>
+          <ng-container *ngFor="let dns of dns$ | async as list">
+            <option value="{{ dns.class }}">{{ dns.label }}</option>
+          </ng-container>
+        </select>
+        <div *ngIf="submitted && errors.dns" class="invalid-feedback d-block">
+          <div *ngIf="errors.dns.required">
+            Dns needs to be selected
+          </div>
+        </div>
+      </div>
+      <!-- Dns input end -->
+      <!-- Waf input-->
+      <div class="form-group">
+        <label for="waf-input" class="d-none">Waf</label>
+        <select
+          class="custom-select"
+          [ngClass]="{
+            'is-invalid': submitted && errors.waf
+          }"
+          id="waf-input"
+          formControlName="waf"
+        >
+          <option value="" disabled hidden selected>Select waf</option>
+          <ng-container *ngFor="let waf of waf$ | async as list">
+            <option value="{{ waf.class }}">{{ waf.label }}</option>
+          </ng-container>
+        </select>
+        <div *ngIf="submitted && errors.waf" class="invalid-feedback d-block">
+          <div *ngIf="errors.waf.required">
+            Waf needs to be selected
+          </div>
+        </div>
+      </div>
+      <!-- Waf input end -->
+    </form>
+  </div>
   <div class="modal-footer">
     <img
       *ngIf="creating"
@@ -26,7 +119,7 @@
     <button
       type="button"
       class="btn btn-outline-dark"
-      (click)="addRegistrar()"
+      (click)="addDomain()"
       [disabled]="creating"
     >
       Save

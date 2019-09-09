@@ -30,7 +30,7 @@ export class CreateRegistrarComponent implements OnInit {
   ) {
     this.newRegistrarForm = this.formBuilder.group({
       label: ['', Validators.required],
-      agent_module: ['', Validators.required],
+      agent: ['', Validators.required],
     });
   }
 
@@ -42,7 +42,7 @@ export class CreateRegistrarComponent implements OnInit {
   get errors(): { [key: string]: ValidationErrors } {
     return {
       label: this.newRegistrarForm.controls.label.errors,
-      agent_module: this.newRegistrarForm.controls.agent.errors,
+      agent: this.newRegistrarForm.controls.agent.errors,
     };
   }
 
