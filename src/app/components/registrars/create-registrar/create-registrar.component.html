@@ -1,9 +1,14 @@
+<!-- Create registrar button opens modal-->
 <div class="add-btn-container">
-  <button class="btn btn-primary btn-add" (click)="open(content)">
-    Add Registrar
+  <button
+    class="btn btn-primary btn-add"
+    (click)="open(content)"
+  >
+    <i class="fa fa-plus fa-sm"></i> Add Registrar
   </button>
 </div>
 
+<!-- Create registrar modal-->
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Add new registrar</h4>
@@ -18,8 +23,9 @@
   </div>
   <div class="modal-body">
     <form [formGroup]="newRegistrarForm" (ngSubmit)="onSubmit()">
+      <!-- Name input -->
       <div class="form-group">
-        <label for="label" class="d-none">Label</label>
+        <label for="name" class="d-none">Name</label>
         <input
           type="text"
           class="form-control"
@@ -36,6 +42,8 @@
           </div>
         </div>
       </div>
+      <!-- Name input end -->
+      <!-- Registrar input -->
       <div class="form-group">
         <label for="agent-input" class="d-none">Agent</label>
         <select
@@ -57,6 +65,7 @@
           </div>
         </div>
       </div>
+      <!-- Registrar input end -->
     </form>
   </div>
   <div class="modal-footer">
