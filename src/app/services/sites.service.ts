@@ -13,7 +13,7 @@ import { HttpErrorHandler } from './http-error-handler.service';
 })
 export class SitesService {
   private sitesUrl: string;
-  private _sites: BehaviorSubject<Site[]>;
+  private sites$: BehaviorSubject<Site[]>;
   private store: { sites: Site[] };
   private headers: HttpHeaders;
   private currentSiteId: string;
@@ -26,7 +26,7 @@ export class SitesService {
     private httpErrorHandler: HttpErrorHandler
   ) {
     this.sitesUrl = `${environment.api_url}/sites`;
-    this._sites = <BehaviorSubject<Site[]>>new BehaviorSubject([]);
+    this.sites$ = new BehaviorSubject([]) as BehaviorSubject<Site[]>;
     this.store = { sites: [] };
     this.headers = new HttpHeaders()
       .append('Content-Type', 'application/json')
@@ -45,18 +45,18 @@ export class SitesService {
    * Getter for Sites
    */
   get sites(): Observable<Site[]> {
-    return this._sites.asObservable();
+    return this.sites$.asObservable();
   }
 
   /**
    * Getter for single Site
    */
   get site(): Observable<Site> {
-    this.loading.single = true;
-    return this._sites.pipe(
+    return this.sites$.pipe(
       map((sites: Site[]) =>
         sites.find((site: Site) => {
-          const condition = site && parseInt(this.currentSiteId) === site.id;
+          const condition =
+            site && parseInt(this.currentSiteId, 10) === site.id;
           if (condition) {
             this.loading.single = false;
           }
@@ -69,8 +69,8 @@ export class SitesService {
   /**
    * Load site by ID
    *
-   * @param {string} id Site ID
-   * @param {string} force Force ignore cache
+   * @param id Site ID
+   * @param force Force ignore cache
    */
   load(id: string, force: boolean = false): void {
     this.loading.single = true;
@@ -95,7 +95,7 @@ export class SitesService {
             this.store.sites.push(newSite);
           }
 
-          this._sites.next(Object.assign({}, this.store).sites);
+          this.sites$.next(Object.assign({}, this.store).sites);
           this.loading.single = false;
         },
       });
@@ -104,8 +104,8 @@ export class SitesService {
   /**
    * Load all (filtered by term) sites
    *
-   * @param {string} term  Search term
-   * @param {boolean} force Force ignore cache
+   * @param term  Search term
+   * @param force Force ignore cache
    */
   loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
@@ -123,7 +123,7 @@ export class SitesService {
       .subscribe({
         next: (res: SitesResponse) => {
           this.store = res;
-          this._sites.next(Object.assign({}, this.store).sites);
+          this.sites$.next(Object.assign({}, this.store).sites);
           this.loading.bulk = false;
         },
       });
