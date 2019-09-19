@@ -1,19 +1,27 @@
-<!--
-<label>
-  Name:
-  <input type="text" [formControl]="searchTerm">
-</label>
-<p>
-  <button (click)="search()">Search</button>
-</p>
--->
+<!-- Create registrar -->
+<div class="container">
+  <div class="row my-3 ml-0">
+    <div class="col-md-2">
+      <!-- Create registrar component -->
+      <app-create-registrar></app-create-registrar>
+    </div>
+    <!--
+    <label>
+      Name:
+      <input type="text" [formControl]="searchTerm">
+    </label>
+    <p>
+      <button (click)="search()">Search</button>
+    </p>
+    -->
+  </div>
+</div>
 
 <!-- Search results container -->
 <div
-  class="container my-3"
+  class="container"
   *ngIf="!loading && registrars$ | async as registrars; else notready"
 >
-  <app-create-registrar></app-create-registrar>
   <ng-container>
     <div class="table-responsive" *ngIf="registrars.length > 0">
       <!-- Search results table -->
