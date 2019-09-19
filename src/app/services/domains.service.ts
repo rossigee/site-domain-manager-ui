@@ -14,7 +14,7 @@ import { HttpErrorHandler } from './http-error-handler.service';
 })
 export class DomainsService {
   private domainsUrl: string;
-  private _domains: BehaviorSubject<Domain[]>;
+  private domains$: BehaviorSubject<Domain[]>;
   private store: DomainsResponse;
   private headers: HttpHeaders;
   private currentDomainId: string;
@@ -27,7 +27,7 @@ export class DomainsService {
     private httpErrorHandler: HttpErrorHandler
   ) {
     this.domainsUrl = `${environment.api_url}/domains`;
-    this._domains = <BehaviorSubject<Domain[]>>new BehaviorSubject([]);
+    this.domains$ = new BehaviorSubject([]) as BehaviorSubject<Domain[]>;
     this.store = { domains: [] };
     this.headers = new HttpHeaders()
       .append('Content-Type', 'application/json')
@@ -43,16 +43,15 @@ export class DomainsService {
   }
 
   get domains(): Observable<Domain[]> {
-    return this._domains.asObservable();
+    return this.domains$.asObservable();
   }
 
   get domain(): Observable<Domain> {
-    this.loading.single = true;
-    return this._domains.pipe(
+    return this.domains$.pipe(
       map((domains: Domain[]) =>
         domains.find((domain: Domain) => {
           const condition =
-            domain && parseInt(this.currentDomainId) === domain.id;
+            domain && parseInt(this.currentDomainId, 10) === domain.id;
           if (condition) {
             this.loading.single = false;
           }
@@ -65,8 +64,8 @@ export class DomainsService {
   /**
    * Load domain by ID
    *
-   * @param {string} id Domain ID
-   * @param {boolean} force Force ignore cache
+   * @param id Domain ID
+   * @param force Force ignore cache
    */
   load(id: string, force: boolean = false): void {
     this.loading.single = true;
@@ -93,7 +92,7 @@ export class DomainsService {
             this.store.domains.push(newDomain);
           }
 
-          this._domains.next(Object.assign({}, this.store).domains);
+          this.domains$.next(Object.assign({}, this.store).domains);
           this.loading.single = false;
         },
       });
@@ -102,8 +101,8 @@ export class DomainsService {
   /**
    * Load all (filtered by term) domains
    *
-   * @param {string} term Search term. Default ''
-   * @param {boolean} force Force ignore cache
+   * @param term Search term. Default ''
+   * @param force Force ignore cache
    */
   loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
@@ -121,7 +120,7 @@ export class DomainsService {
       .subscribe({
         next: (res: DomainsResponse) => {
           this.store = res;
-          this._domains.next(Object.assign({}, this.store).domains);
+          this.domains$.next(Object.assign({}, this.store).domains);
           this.loading.bulk = false;
         },
       });
