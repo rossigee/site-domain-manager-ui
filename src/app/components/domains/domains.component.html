@@ -1,19 +1,35 @@
+<!-- Add / Search domain -->
 <div class="container">
-  <div class="row my-3 ml-0 input-group">
-    <label for="search-domains" class="d-none">Search domains</label>
-    <input
-      class="form-control"
-      type="text"
-      name="search-domains"
-      [formControl]="searchTerm"
-      (keyup.enter)="search()"
-      placeholder="Domain name"
-    />
-    <div class="input-group-append">
-      <button class="btn btn-success" (click)="search()">Search</button>
+  <div class="row my-3 ml-0">
+    <div class="col-md-2">
+      <!-- Create domain component -->
+      <app-create-domain></app-create-domain>
+    </div>
+    <!-- Search domain input group -->
+    <div class="col-md-10">
+      <div class="input-group">
+        <label for="search-domains" class="d-none">
+          Search domains
+        </label>
+        <input
+          class="form-control"
+          type="text"
+          name="search-domains"
+          [formControl]="searchTerm"
+          (keyup.enter)="search()"
+          placeholder="Search domains"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-success"
+            (click)="search()"
+          >
+            <i class="fa fa-search fa-sm"></i> Search
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <app-create-domain></app-create-domain>
 </div>
 
 <!-- Search results container -->

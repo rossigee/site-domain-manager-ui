@@ -1,7 +1,14 @@
-<button class="btn btn-primary btn-add" (click)="open(content)">
-  Add Domain
-</button>
+<!-- Create domain button opens modal -->
+<div class="add-btn-container">
+  <button
+    class="btn btn-primary btn-add"
+    (click)="open(content)"
+    >
+      <i class="fa fa-plus fa-sm"></i> Add Domain
+  </button>
+</div>
 
+<!-- Create domain modal -->
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Add new domain</h4>

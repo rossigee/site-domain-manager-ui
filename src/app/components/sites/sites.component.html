@@ -2,9 +2,21 @@
 <div class="container">
   <div class="row my-3 ml-0 input-group">
     <label for="search-sites" class="d-none">Search</label>
-    <input class="form-control" type="text" name="search-sites" [formControl]="searchTerm" (keyup.enter)="search()" placeholder="Search" >
+    <input
+      class="form-control"
+      type="text"
+      name="search-sites"
+      [formControl]="searchTerm"
+      (keyup.enter)="search()"
+      placeholder="Search sites"
+    >
     <div class="input-group-append">
-      <button class="btn btn-success" (click)="search()">Search</button>
+      <button
+        class="btn btn-success"
+        (click)="search()"
+      >
+        <i class="fa fa-search fa-sm"></i> Search
+    </button>
     </div>
   </div>
 </div>
