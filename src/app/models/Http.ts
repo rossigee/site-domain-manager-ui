@@ -15,3 +15,9 @@ export interface Loading {
   bulk: boolean;
   single: boolean;
 }
+
+export interface CRUDLoading extends Loading {
+  creating?: boolean;
+  updating?: boolean;
+  deleting?: boolean;
+}

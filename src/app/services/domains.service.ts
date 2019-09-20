@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Domain, DomainsResponse, DomainResponse } from '../models/Domain';
-import { Headers, Loading, HandleError } from '../models/Http';
+import {
+  Domain,
+  DomainsResponse,
+  DomainResponse,
+  DomainUpdateParams,
+} from '../models/Domain';
+import { Loading, HandleError, CRUDLoading } from '../models/Http';
 import { AuthenticationService } from './authentication.service';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
@@ -14,12 +19,12 @@ import { HttpErrorHandler } from './http-error-handler.service';
 })
 export class DomainsService {
   private domainsUrl: string;
-  private _domains: BehaviorSubject<Domain[]>;
+  private domains$: BehaviorSubject<Domain[]>;
   private store: DomainsResponse;
   private headers: HttpHeaders;
   private currentDomainId: string;
   private handleError: HandleError;
-  loading: Loading;
+  loading: CRUDLoading;
 
   constructor(
     private http: HttpClient,
@@ -27,7 +32,7 @@ export class DomainsService {
     private httpErrorHandler: HttpErrorHandler
   ) {
     this.domainsUrl = `${environment.api_url}/domains`;
-    this._domains = <BehaviorSubject<Domain[]>>new BehaviorSubject([]);
+    this.domains$ = new BehaviorSubject([]) as BehaviorSubject<Domain[]>;
     this.store = { domains: [] };
     this.headers = new HttpHeaders()
       .append('Content-Type', 'application/json')
@@ -38,21 +43,21 @@ export class DomainsService {
     this.loading = {
       bulk: false,
       single: false,
+      updating: false,
     };
     this.handleError = this.httpErrorHandler.createHandleError('domains');
   }
 
   get domains(): Observable<Domain[]> {
-    return this._domains.asObservable();
+    return this.domains$.asObservable();
   }
 
   get domain(): Observable<Domain> {
-    this.loading.single = true;
-    return this._domains.pipe(
+    return this.domains$.pipe(
       map((domains: Domain[]) =>
         domains.find((domain: Domain) => {
           const condition =
-            domain && parseInt(this.currentDomainId) === domain.id;
+            domain && parseInt(this.currentDomainId, 10) === domain.id;
           if (condition) {
             this.loading.single = false;
           }
@@ -65,8 +70,8 @@ export class DomainsService {
   /**
    * Load domain by ID
    *
-   * @param {string} id Domain ID
-   * @param {boolean} force Force ignore cache
+   * @param id Domain ID
+   * @param force Force ignore cache
    */
   load(id: string, force: boolean = false): void {
     this.loading.single = true;
@@ -93,7 +98,7 @@ export class DomainsService {
             this.store.domains.push(newDomain);
           }
 
-          this._domains.next(Object.assign({}, this.store).domains);
+          this.domains$.next(Object.assign({}, this.store).domains);
           this.loading.single = false;
         },
       });
@@ -102,8 +107,8 @@ export class DomainsService {
   /**
    * Load all (filtered by term) domains
    *
-   * @param {string} term Search term. Default ''
-   * @param {boolean} force Force ignore cache
+   * @param term Search term. Default ''
+   * @param force Force ignore cache
    */
   loadAll(term: string = '', force: boolean = false): void {
     this.loading.bulk = true;
@@ -121,8 +126,24 @@ export class DomainsService {
       .subscribe({
         next: (res: DomainsResponse) => {
           this.store = res;
-          this._domains.next(Object.assign({}, this.store).domains);
+          this.domains$.next(Object.assign({}, this.store).domains);
           this.loading.bulk = false;
+        },
+      });
+  }
+
+  update(data: DomainUpdateParams) {
+    this.loading.updating = true;
+    this.http
+      .post(`${this.domainsUrl}/${this.currentDomainId}`, data)
+      .pipe(catchError(this.handleError('update')))
+      .subscribe({
+        next: () => {
+          /**
+           * TODO: Update local data
+           */
+          this.loading.updating = false;
+          this.load(this.currentDomainId, true);
         },
       });
   }

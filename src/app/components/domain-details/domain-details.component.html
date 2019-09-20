@@ -2,62 +2,176 @@
   class="container"
   *ngIf="!loading && domain$ | async as domain; else notready"
 >
-  <h2>
-    <strong>{{ domain.name }}</strong>
-  </h2>
+  <div class="top-bar row">
+    <div class="col-md-10">
+      <h2 class="branding">
+        <strong>{{ editing ? 'Edit domain' : domain.name }}</strong>
+      </h2>
+    </div>
+    <div class="col-md-2 text-right">
+      <button
+        [class]="
+          editing
+            ? 'btn-edit btn-edit editing'
+            : updating
+            ? 'btn-edit disabled'
+            : 'btn-edit'
+        "
+        [disabled]="updating"
+        title="Edit"
+        (click)="switchEditing()"
+      >
+        <span class="fa fa-pencil-square-o"></span>
+      </button>
+    </div>
+    <img
+      class="pl-3"
+      *ngIf="updating"
+      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
+  </div>
 
-  <div class="container">
-    <table class="table">
-      <tr>
-        <td>
-          Registrar:
-        </td>
-        <td>
-          <div>
-            <a [routerLink]="['/registrars/', domain.registrar.id]">{{
-              domain.registrar.label
-            }}</a>
+  <div>
+    <ng-container *ngIf="!editing">
+      <div [class]="updating ? 'table-wrap disabled' : 'table-wrap'">
+        <table class="table">
+          <tr>
+            <td>
+              Registrar:
+            </td>
+            <td>
+              <div>
+                <a [routerLink]="['/registrars/', domain.registrar.id]">{{
+                  domain.registrar.label
+                }}</a>
+              </div>
+              <app-domain-details-registrar
+                [domain]="domain.name"
+                [registrarId]="domain.registrar.id"
+              ></app-domain-details-registrar>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              DNS Provider:
+            </td>
+            <td>
+              <div>{{ domain.dns.label }}</div>
+              <app-domain-details-dns
+                [providerId]="domain.dns.id"
+                [domain]="domain.name"
+              ></app-domain-details-dns>
+            </td>
+          </tr>
+
+          <tr *ngIf="domain.site">
+            <td>
+              Site hosting:
+            </td>
+            <td>
+              {{ domain.site.label }}
+            </td>
+          </tr>
+
+          <tr *ngIf="domain.waf">
+            <td>
+              WAF/proxy:
+            </td>
+            <td>
+              {{ domain.waf.label }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="editing">
+      <form [formGroup]="editForm">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            formControlName="name"
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': submitted && errors.name
+            }"
+          />
+          <div *ngIf="submitted && errors.name" class="invalid-feedback">
+            <div *ngIf="errors.name.required">
+              Name is required
+            </div>
           </div>
-          <app-domain-details-registrar
-            [domain]="domain.name"
-            [registrarId]="domain.registrar.id"
-          ></app-domain-details-registrar>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          DNS Provider:
-        </td>
-        <td>
-          <div>{{ domain.dns.label }}</div>
-          <app-domain-details-dns
-            [providerId]="domain.dns.id"
-            [domain]="domain.name"
-          ></app-domain-details-dns>
-        </td>
-      </tr>
-
-      <tr *ngIf="domain.site">
-        <td>
-          Site hosting:
-        </td>
-        <td>
-          {{ domain.site.label }}
-        </td>
-      </tr>
-
-      <tr *ngIf="domain.waf">
-        <td>
-          WAF/proxy:
-        </td>
-        <td>
-          {{ domain.waf.label }}
-        </td>
-      </tr>
-    </table>
-
-    <button class="btn btn-primary" (click)="refresh()">Update</button>
+        </div>
+        <div class="form-group">
+          <label for="registrars">Registrar</label>
+          <select
+            class="custom-select"
+            id="registrars"
+            name="registrars"
+            formControlName="registrar"
+          >
+            <ng-container *ngFor="let registrar of registrars$ | async as list">
+              <option value="{{ registrar.id }}">{{ registrar.label }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dns">DNS Provider</label>
+          <select
+            class="custom-select"
+            id="dns"
+            name="dns"
+            formControlName="dns"
+          >
+            <ng-container *ngFor="let dns of dns$ | async as list">
+              <option value="{{ dns.id }}">{{ dns.label }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="hosting">Hosting</label>
+          <select
+            class="custom-select"
+            id="hosting"
+            name="hosting"
+            formControlName="hosting"
+          >
+            <ng-container *ngFor="let hosting of hosting$ | async as list">
+              <option value="{{ hosting.id }}">{{ hosting.label }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dns">WAF</label>
+          <select
+            class="custom-select"
+            id="waf"
+            name="waf"
+            formControlName="waf"
+          >
+            <ng-container *ngFor="let waf of waf$ | async as list">
+              <option value="{{ waf.id }}">{{ waf.label }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <button
+          class="btn btn-primary"
+          (click)="submit()"
+          [disabled]="updating"
+        >
+          Update
+        </button>
+        <ng-container *ngIf="updating">
+          <img
+            class="pl-3"
+            src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+          />
+        </ng-container>
+      </form>
+    </ng-container>
   </div>
 </div>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgentsService } from 'src/app/services/agents.service';
 import { Observable } from 'rxjs';
 import { Agent } from 'src/app/models/Agent';
@@ -11,12 +11,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./create-domain.component.css'],
 })
 export class CreateDomainComponent implements OnInit {
-  name: string;
   registrar$: Observable<Agent[]>;
   dns$: Observable<Agent[]>;
   site: number;
   waf$: Observable<Agent[]>;
   domainForm: FormGroup;
+  submitted: boolean;
   constructor(
     private modalService: NgbModal,
     private agentService: AgentsService,
@@ -39,5 +39,18 @@ export class CreateDomainComponent implements OnInit {
     this.registrar$ = this.agentService.registrarAgents;
     this.dns$ = this.agentService.dnsAgents;
     this.waf$ = this.agentService.wafAgents;
+  }
+
+  addDomain(modal: NgbActiveModal) {
+    this.submitted = true;
+
+    // if (!this.domainForm.invalid) {
+    //   /**
+    //    * Perform logic
+    //    */
+    //   const { label, agent } = this.newRegistrarForm.value;
+    //   this.registrarService.create(label, agent);
+    //   modal.close();
+    // }
   }
 }
