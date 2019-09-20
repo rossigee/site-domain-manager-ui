@@ -15,7 +15,7 @@ import { AuthenticationService } from './authentication.service';
 export class DomainDetailsDNSService {
   private dnsUrl: string;
   private handleError: HandleError;
-  private _status: BehaviorSubject<DomainDNSStatus>;
+  private status$: BehaviorSubject<DomainDNSStatus>;
   private store: { status: DomainDNSStatus };
   private headers: HttpHeaders;
   loading: Loading;
@@ -26,7 +26,7 @@ export class DomainDetailsDNSService {
     private authenticationService: AuthenticationService
   ) {
     this.dnsUrl = `${environment.api_url}/dns_providers`;
-    this._status = <BehaviorSubject<DomainDNSStatus>>new BehaviorSubject({});
+    this.status$ = new BehaviorSubject({}) as BehaviorSubject<DomainDNSStatus>;
     this.store = { status: {} as DomainDNSStatus };
     this.loading = {
       single: false,
@@ -44,15 +44,15 @@ export class DomainDetailsDNSService {
   }
 
   get status(): Observable<DomainDNSStatus> {
-    return this._status.asObservable();
+    return this.status$.asObservable();
   }
 
   /**
    * Load dns status for given domain
    *
-   * @param {string} providerId Provider ID
-   * @param {string} domain Domain name
-   * @param {boolean} force Force ignore cache
+   * @param providerId Provider ID
+   * @param domain Domain name
+   * @param force Force ignore cache
    */
   loadStatus(providerId: string, domain: string, force: boolean = false): void {
     this.loading.single = true;
@@ -76,7 +76,7 @@ export class DomainDetailsDNSService {
         next: (res: DomainDNSStatusResponse) => {
           const { status } = res;
           this.store.status = status;
-          this._status.next(Object.assign({}, this.store).status);
+          this.status$.next(Object.assign({}, this.store).status);
           this.loading.single = false;
         },
       });

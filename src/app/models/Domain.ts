@@ -1,11 +1,23 @@
 import { Registrar } from './Registrar';
 import { Dns } from './Dns';
+import { Hosting } from './Hosting';
+import { Waf } from './Waf';
 
 export interface Domain {
   id: number;
   name: string;
-  registrar: Registrar;
-  dns: Dns;
+  registrar?: Registrar;
+  dns?: Dns;
+  hosting?: Hosting;
+  waf?: Waf;
+}
+
+export interface DomainUpdateParams {
+  name: string;
+  registrar?: number;
+  dns?: number;
+  hosting?: number;
+  waf?: number;
 }
 
 export interface DomainsResponse {

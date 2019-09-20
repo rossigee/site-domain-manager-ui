@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Domain, DomainsResponse, DomainResponse } from '../models/Domain';
-import { Headers, Loading, HandleError } from '../models/Http';
+import {
+  Domain,
+  DomainsResponse,
+  DomainResponse,
+  DomainUpdateParams,
+} from '../models/Domain';
+import { Loading, HandleError, CRUDLoading } from '../models/Http';
 import { AuthenticationService } from './authentication.service';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
@@ -19,7 +24,7 @@ export class DomainsService {
   private headers: HttpHeaders;
   private currentDomainId: string;
   private handleError: HandleError;
-  loading: Loading;
+  loading: CRUDLoading;
 
   constructor(
     private http: HttpClient,
@@ -38,6 +43,7 @@ export class DomainsService {
     this.loading = {
       bulk: false,
       single: false,
+      updating: false,
     };
     this.handleError = this.httpErrorHandler.createHandleError('domains');
   }
@@ -122,6 +128,22 @@ export class DomainsService {
           this.store = res;
           this.domains$.next(Object.assign({}, this.store).domains);
           this.loading.bulk = false;
+        },
+      });
+  }
+
+  update(data: DomainUpdateParams) {
+    this.loading.updating = true;
+    this.http
+      .post(`${this.domainsUrl}/${this.currentDomainId}`, data)
+      .pipe(catchError(this.handleError('update')))
+      .subscribe({
+        next: () => {
+          /**
+           * TODO: Update local data
+           */
+          this.loading.updating = false;
+          this.load(this.currentDomainId, true);
         },
       });
   }
