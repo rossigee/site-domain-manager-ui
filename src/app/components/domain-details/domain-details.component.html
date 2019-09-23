@@ -158,12 +158,25 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="google_site_verification">Google Site Verification code</label>
-          <input [formControlName]="google_site_verification" class="form-control" id="google_site_verification" name="google_site_verification"/>
+          <label for="google_site_verification"
+            >Google Site Verification code</label
+          >
+          <input
+            formControlName="google_site_verification"
+            class="form-control"
+            id="google_site_verification"
+            name="google_site_verification"
+          />
         </div>
         <div class="form-group">
           <label for="active">Active</label>
-          <input type="checkbox" class="form-control" [formControlName]="active" id="active" name="active"/>
+          <input
+            type="checkbox"
+            class="form-control"
+            formControlName="active"
+            id="active"
+            name="active"
+          />
         </div>
         <button
           class="btn btn-primary"
