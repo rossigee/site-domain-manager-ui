@@ -52,12 +52,12 @@ export class DomainDetailsComponent implements OnInit {
     this.submitted = false;
     this.editForm = this.fb.group({
       name: ['', Validators.required],
-      registrar: [null],
-      dns: [null],
-      site: [null],
-      waf: [null],
-      google_site_verification: [''],
-      active: [true],
+      registrar: [null, Validators.required],
+      dns: [null, Validators.required],
+      site: [null, Validators.required],
+      waf: [null, Validators.required],
+      google_site_verification: ['', Validators.required],
+      active: [null],
     });
   }
 
@@ -72,6 +72,12 @@ export class DomainDetailsComponent implements OnInit {
   get errors(): { [key: string]: ValidationErrors } {
     return {
       name: this.editForm.controls.name.errors,
+      registrar: this.editForm.controls.registrar.errors,
+      dns: this.editForm.controls.dns.errors,
+      site: this.editForm.controls.site.errors,
+      waf: this.editForm.controls.waf.errors,
+      google_site_verification: this.editForm.controls.google_site_verification
+        .errors,
     };
   }
 

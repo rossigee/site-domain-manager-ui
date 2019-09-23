@@ -109,6 +109,9 @@
           <label for="registrars">Registrar</label>
           <select
             class="custom-select"
+            [ngClass]="{
+              'is-invalid': submitted && errors.registrar
+            }"
             id="registrars"
             name="registrars"
             formControlName="registrar"
@@ -117,11 +120,22 @@
               <option value="{{ registrar.id }}">{{ registrar.label }}</option>
             </ng-container>
           </select>
+          <div
+            *ngIf="submitted && errors.registrar"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="errors.registrar.required">
+              Registrar need to be selected
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="dns">DNS Provider</label>
           <select
             class="custom-select"
+            [ngClass]="{
+              'is-invalid': submitted && errors.dns
+            }"
             id="dns"
             name="dns"
             formControlName="dns"
@@ -130,10 +144,18 @@
               <option value="{{ dns.id }}">{{ dns.label }}</option>
             </ng-container>
           </select>
+          <div *ngIf="submitted && errors.dns" class="invalid-feedback d-block">
+            <div *ngIf="errors.dns.required">
+              DNS provider need to be selected
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="site">Site</label>
           <select
+            [ngClass]="{
+              'is-invalid': submitted && errors.site
+            }"
             class="custom-select"
             id="site"
             name="site"
@@ -143,11 +165,22 @@
               <option value="{{ site.id }}">{{ site.label }}</option>
             </ng-container>
           </select>
+          <div
+            *ngIf="submitted && errors.site"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="errors.site.required">
+              Site need to be selected
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="waf">WAF</label>
           <select
             class="custom-select"
+            [ngClass]="{
+              'is-invalid': submitted && errors.waf
+            }"
             id="waf"
             name="waf"
             formControlName="waf"
@@ -156,6 +189,11 @@
               <option value="{{ waf.id }}">{{ waf.label }}</option>
             </ng-container>
           </select>
+          <div *ngIf="submitted && errors.waf" class="invalid-feedback d-block">
+            <div *ngIf="errors.waf.required">
+              WAF provider need to be selected
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="google_site_verification"
@@ -163,10 +201,21 @@
           >
           <input
             formControlName="google_site_verification"
+            [ngClass]="{
+              'is-invalid': submitted && errors.google_site_verification
+            }"
             class="form-control"
             id="google_site_verification"
             name="google_site_verification"
           />
+          <div
+            *ngIf="submitted && errors.google_site_verification"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="errors.google_site_verification.required">
+              Google Site Verification code is required
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="active">Active</label>

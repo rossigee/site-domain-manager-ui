@@ -135,7 +135,9 @@ export class DomainsService {
   update(data: DomainUpdateParams) {
     this.loading.updating = true;
     this.http
-      .post(`${this.domainsUrl}/${this.currentDomainId}`, data, { headers: this.headers })
+      .post(`${this.domainsUrl}/${this.currentDomainId}`, data, {
+        headers: this.headers,
+      })
       .pipe(catchError(this.handleError('update')))
       .subscribe({
         next: () => {
