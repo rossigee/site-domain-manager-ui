@@ -192,19 +192,24 @@ export class RegistrarsService {
    * @param id Registrar ID
    */
   refreshFromAPI(): void {
-    const headers = this.headers.delete('Content-Type');
+    const headers = this.headers
+      .delete('Content-Type')
+      .set('reset-cache', 'true');
 
     const endpoint = `${this.registrarsUrl}/${this.currentRegistrarId}/refresh`;
-    this.http.get<PostResponse>(endpoint, { headers }).pipe(
-      map(res => {
-        if (res.status === 'ok') {
-          this.toastService.notice(
-            `Refresh successful. ${res.records_read} records updated.`
-          );
-          this.load(this.currentRegistrarId, true);
-        }
-      }),
-      catchError(this.handleError<PostResponse>('refreshFromAPI'))
-    );
+    this.http
+      .get<PostResponse>(endpoint, { headers })
+      .pipe(catchError(this.handleError<PostResponse>('refreshFromAPI')))
+      .subscribe({
+        next: res => {
+          console.log(res);
+          if (res.status === 'ok') {
+            this.toastService.notice(
+              `Refresh successful. ${res.records_read} records updated.`
+            );
+            this.load(this.currentRegistrarId, true);
+          }
+        },
+      });
   }
 }
