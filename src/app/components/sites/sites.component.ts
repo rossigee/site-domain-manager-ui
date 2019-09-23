@@ -13,9 +13,13 @@ export class SitesComponent implements OnInit {
   searchTerm: FormControl;
   sites$: Observable<Site[]>;
   notready: boolean;
+  page: number;
+  pageSize: number;
 
   constructor(private sitesService: SitesService) {
     this.searchTerm = new FormControl('');
+    this.page = 1;
+    this.pageSize = 10;
   }
 
   /**

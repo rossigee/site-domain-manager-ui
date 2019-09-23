@@ -14,9 +14,13 @@ export class DomainsComponent implements OnInit {
   searchTerm: FormControl;
   domains$: Observable<Domain[]>;
   notready: boolean;
+  page: number;
+  pageSize: number;
 
   constructor(private domainsService: DomainsService) {
     this.searchTerm = new FormControl('');
+    this.page = 1;
+    this.pageSize = 10;
   }
 
   get loading() {
