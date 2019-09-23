@@ -9,9 +9,9 @@ import { Dns } from 'src/app/models/Dns';
 import { Registrar } from 'src/app/models/Registrar';
 import { RegistrarsService } from 'src/app/services/registrars.service';
 import { WafService } from 'src/app/services/waf.service';
-import { HostingService } from 'src/app/services/hosting.service';
+import { SitesService } from 'src/app/services/sites.service';
 import { Waf } from 'src/app/models/Waf';
-import { Hosting } from 'src/app/models/Hosting';
+import { Site } from 'src/app/models/Site';
 import {
   FormGroup,
   FormBuilder,
@@ -33,7 +33,7 @@ export class DomainDetailsComponent implements OnInit {
   editing: boolean;
   dns$: Observable<Dns[]>;
   waf$: Observable<Waf[]>;
-  hosting$: Observable<Hosting[]>;
+  sites$: Observable<Site[]>;
   registrars$: Observable<Registrar[]>;
   submitted: boolean;
   editForm: FormGroup;
@@ -43,7 +43,7 @@ export class DomainDetailsComponent implements OnInit {
     private domainService: DomainsService,
     private dnsService: DnsService,
     private wafService: WafService,
-    private hostingService: HostingService,
+    private sitesService: SitesService,
     private registrarService: RegistrarsService,
     private fb: FormBuilder
   ) {
@@ -54,8 +54,10 @@ export class DomainDetailsComponent implements OnInit {
       name: ['', Validators.required],
       registrar: [null],
       dns: [null],
-      hosting: [null],
+      site: [null],
       waf: [null],
+      google_site_verification: [''],
+      active: [true]
     });
   }
 
@@ -80,12 +82,12 @@ export class DomainDetailsComponent implements OnInit {
        */
       this.dnsService.loadProviders();
       this.registrarService.loadAll();
-      this.hostingService.loadAll();
+      this.sitesService.loadAll();
       this.wafService.loadAll();
       this.dns$ = this.dnsService.providers;
       this.registrars$ = this.registrarService.registrars;
       this.waf$ = this.wafService.waf;
-      this.hosting$ = this.hostingService.hostings;
+      this.sites$ = this.sitesService.sites;
       this.setInitialValues();
     }
     this.submitted = false;
@@ -118,8 +120,10 @@ export class DomainDetailsComponent implements OnInit {
           name: domain.name,
           registrar: domain.registrar ? domain.registrar.id : null,
           dns: domain.dns ? domain.dns.id : null,
-          hosting: domain.hosting ? domain.hosting.id : null,
+          site: domain.site ? domain.site.id : null,
           waf: domain.waf ? domain.waf.id : null,
+          google_site_verification: domain.google_site_verification,
+          active: domain.active
         });
       })
     );
