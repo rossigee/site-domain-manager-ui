@@ -7,6 +7,10 @@ export interface Site {
   hosting: Hosting;
 }
 
+export interface SiteUpdateParams {
+  active: boolean;
+}
+
 export interface SitesResponse {
   sites: Site[];
 }

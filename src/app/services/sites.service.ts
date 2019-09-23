@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { Site, SitesResponse, SiteResponse } from '../models/Site';
+import {
+  Site,
+  SitesResponse,
+  SiteResponse,
+  SiteUpdateParams,
+} from '../models/Site';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Headers, Loading, HandleError } from '../models/Http';
+import { Headers, Loading, HandleError, CRUDLoading } from '../models/Http';
 import { map, catchError } from 'rxjs/operators';
 import { HttpErrorHandler } from './http-error-handler.service';
 
@@ -18,7 +23,7 @@ export class SitesService {
   private headers: HttpHeaders;
   private currentSiteId: string;
   private handleError: HandleError;
-  loading: Loading;
+  loading: CRUDLoading;
 
   constructor(
     private http: HttpClient,
@@ -37,6 +42,7 @@ export class SitesService {
     this.loading = {
       bulk: false,
       single: false,
+      updating: false,
     };
     this.handleError = this.httpErrorHandler.createHandleError('sites');
   }
@@ -125,6 +131,24 @@ export class SitesService {
           this.store = res;
           this.sites$.next(Object.assign({}, this.store).sites);
           this.loading.bulk = false;
+        },
+      });
+  }
+
+  update(data: SiteUpdateParams): void {
+    this.loading.updating = true;
+    this.http
+      .post(`${this.sitesUrl}/${this.currentSiteId}`, data, {
+        headers: this.headers,
+      })
+      .pipe(catchError(this.handleError('update')))
+      .subscribe({
+        next: () => {
+          /**
+           * TODO: Update local data
+           */
+          this.loading.updating = false;
+          this.load(this.currentSiteId, true);
         },
       });
   }
