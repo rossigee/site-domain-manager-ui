@@ -56,7 +56,7 @@ export class DomainDetailsComponent implements OnInit {
       dns: [null, Validators.required],
       site: [null, Validators.required],
       waf: [null, Validators.required],
-      google_site_verification: ['', Validators.required],
+      google_site_verification: [''],
       active: [null],
     });
   }
@@ -128,7 +128,7 @@ export class DomainDetailsComponent implements OnInit {
           dns: domain.dns ? domain.dns.id : null,
           site: domain.site ? domain.site.id : null,
           waf: domain.waf ? domain.waf.id : null,
-          google_site_verification: domain.google_site_verification,
+          google_site_verification: domain.google_site_verification || '',
           active: domain.active,
         });
       })
