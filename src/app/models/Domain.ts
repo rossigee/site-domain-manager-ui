@@ -1,6 +1,6 @@
 import { Registrar } from './Registrar';
 import { Dns } from './Dns';
-import { Hosting } from './Hosting';
+import { Site } from './Site';
 import { Waf } from './Waf';
 
 export interface Domain {
@@ -8,16 +8,24 @@ export interface Domain {
   name: string;
   registrar?: Registrar;
   dns?: Dns;
-  hosting?: Hosting;
+  site?: Site;
   waf?: Waf;
+  update_apex: boolean;
+  //update_a_records: string; //array
+  google_site_verification: string;
+  active: boolean;
 }
 
 export interface DomainUpdateParams {
   name: string;
   registrar?: number;
   dns?: number;
-  hosting?: number;
+  site?: number;
   waf?: number;
+  update_apex: boolean;
+  //update_a_records: string; //array
+  google_site_verification: string;
+  active: boolean;
 }
 
 export interface DomainsResponse {

@@ -132,20 +132,20 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="hosting">Hosting</label>
+          <label for="site">Site</label>
           <select
             class="custom-select"
-            id="hosting"
-            name="hosting"
-            formControlName="hosting"
+            id="site"
+            name="site"
+            formControlName="site"
           >
-            <ng-container *ngFor="let hosting of hosting$ | async as list">
-              <option value="{{ hosting.id }}">{{ hosting.label }}</option>
+            <ng-container *ngFor="let site of sites$ | async as list">
+              <option value="{{ site.id }}">{{ site.label }}</option>
             </ng-container>
           </select>
         </div>
         <div class="form-group">
-          <label for="dns">WAF</label>
+          <label for="waf">WAF</label>
           <select
             class="custom-select"
             id="waf"
@@ -156,6 +156,14 @@
               <option value="{{ waf.id }}">{{ waf.label }}</option>
             </ng-container>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="google_site_verification">Google Site Verification code</label>
+          <input [formControlName]="google_site_verification" class="form-control" id="google_site_verification" name="google_site_verification"/>
+        </div>
+        <div class="form-group">
+          <label for="active">Active</label>
+          <input type="checkbox" class="form-control" [formControlName]="active" id="active" name="active"/>
         </div>
         <button
           class="btn btn-primary"
