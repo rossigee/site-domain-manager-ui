@@ -11,7 +11,7 @@ export interface Domain {
   site?: Site;
   waf?: Waf;
   update_apex: boolean;
-  //update_a_records: string; //array
+  // update_a_records: string; //array
   google_site_verification: string;
   active: boolean;
 }
@@ -23,7 +23,7 @@ export interface DomainUpdateParams {
   site?: number;
   waf?: number;
   update_apex: boolean;
-  //update_a_records: string; //array
+  // update_a_records: string; //array
   google_site_verification: string;
   active: boolean;
 }

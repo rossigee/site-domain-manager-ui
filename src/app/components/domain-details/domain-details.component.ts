@@ -57,7 +57,7 @@ export class DomainDetailsComponent implements OnInit {
       site: [null],
       waf: [null],
       google_site_verification: [''],
-      active: [true]
+      active: [true],
     });
   }
 
@@ -123,7 +123,7 @@ export class DomainDetailsComponent implements OnInit {
           site: domain.site ? domain.site.id : null,
           waf: domain.waf ? domain.waf.id : null,
           google_site_verification: domain.google_site_verification,
-          active: domain.active
+          active: domain.active,
         });
       })
     );
