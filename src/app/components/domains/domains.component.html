@@ -50,10 +50,7 @@
         </thead>
         <tbody>
           <tr
-            *ngFor="
-              let domain of domains
-                | slice: (page - 1) * pageSize:(page - 1) * pageSize + pageSize
-            "
+            *ngFor="let domain of domains; index as domainId"
             routerLink="/domains/{{ domain.id }}"
           >
             <th scope="row">
@@ -74,11 +71,6 @@
         </tbody>
       </table>
     </div>
-    <ngb-pagination
-      [(page)]="page"
-      [pageSize]="pageSize"
-      [collectionSize]="domains.length"
-    ></ngb-pagination>
   </ng-container>
 </div>
 
