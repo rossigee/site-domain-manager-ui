@@ -40,16 +40,24 @@
           >Registrars</a
         >
       </li>
-      <!--
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Registrars</a>
-        <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">Namecheap</a>
-          <a class="dropdown-item" href="#">IONOS</a>
-          <a class="dropdown-item" href="#">Marcaria</a>
+
+      <li class="nav-item dropdown" ngbDropdown display="dynamic">
+        <a
+          class="nav-link"
+          style="cursor: pointer"
+          ngbDropdownToggle
+          id="agents"
+          role="button"
+        >
+          Agents
+        </a>
+        <div ngbDropdownMenu aria-labelledby="agents" class="dropdown-menu">
+          <a class="dropdown-item" href="#" (click)="$event.preventDefault()"
+            >WAF</a
+          >
         </div>
       </li>
-    --></ul>
+    </ul>
     <!--
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
