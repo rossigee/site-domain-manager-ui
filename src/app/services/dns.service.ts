@@ -101,5 +101,31 @@ export class DnsService {
    */
   loadProvider(id: string, force: boolean = false) {
     this.currentProviderId = id;
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
+    this.http
+      .get<Dns>(this.dnsUrl + '/' + id, {
+        headers,
+      })
+      .pipe(catchError(this.handleError<Dns>('load')))
+      .subscribe({
+        next: (res: Dns) => {
+          let notFound = true;
+          const newDns = res;
+          this.store.dns_providers.forEach((dns: Dns, index: number) => {
+            if (dns.id === newDns.id) {
+              this.store.dns_providers[index] = newDns;
+              notFound = false;
+            }
+          });
+          if (notFound) {
+            this.store.dns_providers.push(newDns);
+          }
+
+          this.dns$.next(Object.assign({}, this.store).dns_providers);
+          this.loading.single = false;
+        },
+      });
   }
 }
