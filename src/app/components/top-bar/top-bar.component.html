@@ -52,7 +52,10 @@
           Agents
         </a>
         <div ngbDropdownMenu aria-labelledby="agents" class="dropdown-menu">
-          <a class="dropdown-item" href="#" (click)="$event.preventDefault()"
+          <a
+            class="dropdown-item"
+            routerLinkActive="active"
+            [routerLink]="['/waf']"
             >WAF</a
           >
         </div>

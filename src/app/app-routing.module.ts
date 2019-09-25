@@ -10,6 +10,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
 import { RegistrarsComponent } from './components/registrars/registrars.component';
+import { WafComponent } from './components/waf/waf.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -37,6 +38,11 @@ const routes: Routes = [
   {
     path: 'registrars/:registrarId',
     component: RegistrarDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'waf',
+    component: WafComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'domains' },
