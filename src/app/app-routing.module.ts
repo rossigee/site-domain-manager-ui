@@ -11,6 +11,7 @@ import { SitesComponent } from './components/sites/sites.component';
 import { DomainsComponent } from './components/domains/domains.component';
 import { RegistrarsComponent } from './components/registrars/registrars.component';
 import { WafComponent } from './components/waf/waf.component';
+import { DnsComponent } from './components/dns/dns.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -43,6 +44,11 @@ const routes: Routes = [
   {
     path: 'waf',
     component: WafComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'dns',
+    component: DnsComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'domains' },
