@@ -43,7 +43,7 @@
 
       <li class="nav-item dropdown" ngbDropdown display="dynamic">
         <a
-          class="nav-link"
+          [class]="isAgent ? 'nav-link active' : 'nav-link'"
           style="cursor: pointer"
           ngbDropdownToggle
           id="agents"
