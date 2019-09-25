@@ -66,6 +66,7 @@ export class AgentsService {
       .subscribe({
         next: (res: AgentResponse) => {
           this.store = res;
+          console.log(res);
           this.registrar$.next(Object.assign({}, this.store).registrar);
           this.dns$.next(Object.assign({}, this.store).dns);
           this.waf$.next(Object.assign({}, this.store).waf);

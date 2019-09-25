@@ -17,6 +17,7 @@ export class WafService {
   private handleError: HandleError;
   private waf$: BehaviorSubject<Waf[]>;
   private store: { waf_providers: Waf[] };
+  private currentWafId: string;
   loading: Loading;
   constructor(
     private http: HttpClient,
