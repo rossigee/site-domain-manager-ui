@@ -58,9 +58,10 @@ export class DnsService {
     return this.dns$.pipe(
       map((providers: Dns[]) =>
         providers.find((provider: Dns) => {
-          const condition = provider && this.currentProviderId === provider.id;
+          const condition =
+            provider && this.currentProviderId === provider.id.toString();
           if (condition) {
-            // this.loading.single = false;
+            this.loading.single = false;
           }
           return condition;
         })
@@ -101,6 +102,7 @@ export class DnsService {
    */
   loadProvider(id: string, force: boolean = false) {
     this.currentProviderId = id;
+    this.loading.single = true;
     const headers = !force
       ? this.headers
       : this.headers.set('reset-cache', 'true');

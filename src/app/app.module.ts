@@ -28,6 +28,7 @@ import { CreateRegistrarComponent } from './components/registrars/create-registr
 import { CreateDomainComponent } from './components/domains/create-domain/create-domain.component';
 import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
+import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { DnsComponent } from './components/dns/dns.component';
     CreateDomainComponent,
     WafComponent,
     DnsComponent,
+    DnsDetailsComponent,
   ],
   imports: [
     BrowserModule,
