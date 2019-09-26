@@ -12,11 +12,16 @@ export class TopBarComponent implements OnInit {
 
   constructor(private route: Router) {
     this.isCollapsed = true;
-    this.agents = ['/waf', '/dns', '/hosting'];
+    this.agents = ['waf', 'dns', 'hosting', 'registrars'];
   }
 
   get isAgent(): boolean {
-    return this.agents.includes(this.route.url);
+    const reg: RegExp = /([^/]+)/;
+    const match = reg.exec(this.route.url);
+    if (!match || !match[1]) {
+      return false;
+    }
+    return this.agents.includes(match[1]);
   }
 
   ngOnInit() {}
