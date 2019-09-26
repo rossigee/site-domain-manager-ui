@@ -27,7 +27,7 @@ export class DomainsComponent implements OnInit {
     // initial load
     this.domainsService.loadAll(this.searchTerm.value);
 
-    // Make subscription on observer
+    // Make subscription on observers
     this.domains$ = this.domainsService.domains;
   }
 

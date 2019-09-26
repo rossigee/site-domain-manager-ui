@@ -7,6 +7,8 @@ import {
   DomainsResponse,
   DomainResponse,
   DomainUpdateParams,
+  DomainStatusCheck,
+  DomainStatusChecksResponse
 } from '../models/Domain';
 import { Loading, HandleError, CRUDLoading } from '../models/Http';
 import { AuthenticationService } from './authentication.service';
@@ -20,7 +22,9 @@ import { HttpErrorHandler } from './http-error-handler.service';
 export class DomainsService {
   private domainsUrl: string;
   private domains$: BehaviorSubject<Domain[]>;
+  private checks$: BehaviorSubject<DomainStatusCheck>;
   private store: DomainsResponse;
+  private store2: DomainStatusChecksResponse;
   private headers: HttpHeaders;
   private currentDomainId: string;
   private handleError: HandleError;
@@ -33,7 +37,9 @@ export class DomainsService {
   ) {
     this.domainsUrl = `${environment.api_url}/domains`;
     this.domains$ = new BehaviorSubject([]) as BehaviorSubject<Domain[]>;
+    this.checks$ = new BehaviorSubject(undefined) as BehaviorSubject<DomainStatusCheck>;
     this.store = { domains: [] };
+    this.store2 = { checks: [] };
     this.headers = new HttpHeaders()
       .append('Content-Type', 'application/json')
       .append(
@@ -65,6 +71,10 @@ export class DomainsService {
         })
       )
     );
+  }
+
+  get checks(): Observable<DomainStatusCheck> {
+    return this.checks$.asObservable();
   }
 
   /**
@@ -149,4 +159,81 @@ export class DomainsService {
         },
       });
   }
+
+  _updateCheck(newCheck: DomainStatusCheck): void {
+    let notFound = true;
+    this.store2.checks.forEach((check: DomainStatusCheck, index: number) => {
+      if (check._check_id === newCheck._check_id) {
+        this.store2.checks[index] = newCheck;
+        notFound = false;
+      }
+    });
+    if (notFound) {
+      this.store2.checks.push(newCheck);
+    }
+  }
+
+  /**
+   * Fetch status checks for domain
+   *
+   * @param id Domain ID
+   * @param force Force ignore cache
+   */
+  statusChecks(id: string, force: boolean = false): void {
+    const headers = !force
+      ? this.headers
+      : this.headers.set('reset-cache', 'true');
+    this.http
+      .get<DomainStatusChecksResponse>(this.domainsUrl + '/' + id + '/checks', {
+        headers: headers,
+      })
+      .pipe(catchError(this.handleError<DomainStatusChecksResponse>('statusChecks')))
+      .subscribe({
+        next: (res: DomainStatusChecksResponse) => {
+          res.checks.forEach((check: DomainStatusCheck) => {
+            this._updateCheck(check);
+            this.checks$.next(check);
+          });
+        },
+      });
+  }
+
+  /**
+   * Trigger check of NS records`
+   *
+   * @param id Domain ID
+   */
+  recheckNS(id: string): void {
+    this.http
+      .get<DomainStatusChecksResponse>(this.domainsUrl + '/' + id + '/check/ns', { headers: this.headers })
+      .pipe(catchError(this.handleError<DomainStatusChecksResponse>('statusChecks')))
+      .subscribe({
+        next: (res: DomainStatusChecksResponse) => {
+          res.checks.forEach((check) => {
+            this._updateCheck(check);
+            this.checks$.next(check);
+          });
+        },
+      });
+  }
+
+  /**
+   * Trigger check of A records`
+   *
+   * @param id Domain ID
+   */
+  recheckA(id: string): void {
+    this.http
+      .get<DomainStatusChecksResponse>(this.domainsUrl + '/' + id + '/check/a', { headers: this.headers })
+      .pipe(catchError(this.handleError<DomainStatusChecksResponse>('statusChecks')))
+      .subscribe({
+        next: (res: DomainStatusChecksResponse) => {
+          res.checks.forEach((check) => {
+            this._updateCheck(check);
+            this.checks$.next(check);
+          });
+        },
+      });
+  }
+
 }
