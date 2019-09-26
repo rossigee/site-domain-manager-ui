@@ -45,6 +45,22 @@
                   domain.registrar.label
                 }}</a>
               </div>
+              <div class="container border m3">
+                <div
+                  *ngIf="domainNSStatusCheck"
+                  [class]="domainNSStatusCheck.success ? 'bg-success' : 'bg-warning'"
+                >
+                  A records:
+                  <span>{{ domainNSStatusCheck.output }}</span>
+                </div>
+                <button
+                  [class]="btn"
+                  title="Recheck NS"
+                  (click)="recheckNS()"
+                >
+                  Recheck NS records
+                </button>
+              </div>
               <app-domain-details-registrar
                 [domain]="domain.name"
                 [registrarId]="domain.registrar.id"
@@ -57,7 +73,25 @@
               DNS Provider:
             </td>
             <td>
-              <div>{{ domain.dns.label }}</div>
+              <a [routerLink]="['/dns/', domain.dns.id]">{{
+                domain.dns.label
+              }}</a>
+              <div class="container border m3">
+                <div
+                  *ngIf="domainAStatusCheck"
+                  [class]="domainAStatusCheck.success ? 'bg-success' : 'bg-warning'"
+                >
+                  A records:
+                  <span>{{ domainAStatusCheck.output }}</span>
+                </div>
+                <button
+                  [class]="btn"
+                  title="Recheck A"
+                  (click)="recheckA()"
+                >
+                  Recheck A records
+                </button>
+              </div>
               <app-domain-details-dns
                 [providerId]="domain.dns.id"
                 [domain]="domain.name"
