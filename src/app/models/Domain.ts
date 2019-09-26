@@ -55,3 +55,14 @@ export interface DomainDNSStatus {
 export interface DomainDNSStatusResponse {
   status: DomainDNSStatus;
 }
+
+export interface DomainStatusCheck {
+  _check_id: string;
+  startTime: string;
+  endTime: string;
+  success: boolean;
+  output: string;
+}
+export interface DomainStatusChecksResponse {
+  [checks: string]: DomainStatusCheck[];
+}

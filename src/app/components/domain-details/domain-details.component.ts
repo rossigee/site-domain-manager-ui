@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Domain } from 'src/app/models/Domain';
+import { Domain, DomainStatusCheck } from 'src/app/models/Domain';
 import { DomainsService } from 'src/app/services/domains.service';
 import { Observable } from 'rxjs';
 import { DnsService } from 'src/app/services/dns.service';
@@ -28,7 +28,11 @@ import { tap } from 'rxjs/operators';
 })
 export class DomainDetailsComponent implements OnInit {
   id: string;
+  name: string;
   domain$: Observable<Domain>;
+  checks$: Observable<DomainStatusCheck>
+  domainNSStatusCheck: DomainStatusCheck;
+  domainAStatusCheck: DomainStatusCheck;
   notready: boolean;
   editing: boolean;
   dns$: Observable<Dns[]>;
@@ -40,7 +44,7 @@ export class DomainDetailsComponent implements OnInit {
 
   constructor(
     route: ActivatedRoute,
-    private domainService: DomainsService,
+    private domainsService: DomainsService,
     private dnsService: DnsService,
     private wafService: WafService,
     private sitesService: SitesService,
@@ -62,11 +66,11 @@ export class DomainDetailsComponent implements OnInit {
   }
 
   get loading(): boolean {
-    return this.domainService.loading.single;
+    return this.domainsService.loading.single;
   }
 
   get updating(): boolean {
-    return this.domainService.loading.updating;
+    return this.domainsService.loading.updating;
   }
 
   get errors(): { [key: string]: ValidationErrors } {
@@ -103,7 +107,7 @@ export class DomainDetailsComponent implements OnInit {
   submit(): void {
     this.submitted = true;
     if (!this.editForm.invalid) {
-      this.domainService.update(this.editForm.value);
+      this.domainsService.update(this.editForm.value);
       setTimeout(() => {
         this.switchEditing();
       }, 500);
@@ -111,17 +115,19 @@ export class DomainDetailsComponent implements OnInit {
   }
 
   refresh(): void {
-    this.domainService.load(this.id, true);
+    this.domainsService.load(this.id, true);
+    this.domainsService.statusChecks(this.id, true);
   }
 
   ngOnInit() {
-    this.domainService.load(this.id);
+    this.domainsService.load(this.id);
     this.setInitialValues();
   }
 
   setInitialValues(): void {
-    this.domain$ = this.domainService.domain.pipe(
+    this.domain$ = this.domainsService.domain.pipe(
       tap(domain => {
+        this.name = domain.name;
         this.editForm.patchValue({
           name: domain.name,
           registrar: domain.registrar ? domain.registrar.id : null,
@@ -131,7 +137,38 @@ export class DomainDetailsComponent implements OnInit {
           google_site_verification: domain.google_site_verification || '',
           active: domain.active,
         });
+        this.statusChecks();
       })
     );
   }
+
+  statusChecks(): void {
+    this.domainsService.statusChecks(this.id);
+    this.checks$ = this.domainsService.checks;
+    this.checks$.subscribe(
+      check => {
+        if(check === undefined) return;
+        let parts = check._check_id.split(":");
+        if(parts[1] != this.name) return;
+        const checkSwitch = (checkid) => ({
+          "ns_records": (value) => {
+            this.domainNSStatusCheck = value;
+          },
+          "a_records": (value) => {
+            this.domainAStatusCheck = value;
+          }
+        })[checkid];
+        checkSwitch(parts[2])(check);
+      },
+    );
+  }
+
+  recheckNS(): void {
+    this.domainsService.recheckNS(this.id);
+  }
+
+  recheckA(): void {
+    this.domainsService.recheckA(this.id);
+  }
+
 }
