@@ -9,3 +9,9 @@ button:focus {
 button:focus {
   border: 0;
 }
+
+table,
+tbody,
+tr {
+  cursor: pointer;
+}
