@@ -27,6 +27,7 @@ import { RegistrarsComponent } from './components/registrars/registrars.componen
 import { CreateRegistrarComponent } from './components/registrars/create-registrar/create-registrar.component';
 import { CreateDomainComponent } from './components/domains/create-domain/create-domain.component';
 import { WafComponent } from './components/waf/waf.component';
+import { HostingComponent } from './components/hosting/hosting.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { WafComponent } from './components/waf/waf.component';
     CreateRegistrarComponent,
     CreateDomainComponent,
     WafComponent,
+    HostingComponent,
   ],
   imports: [
     BrowserModule,
