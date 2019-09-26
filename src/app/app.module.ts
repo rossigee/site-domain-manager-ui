@@ -29,6 +29,7 @@ import { CreateDomainComponent } from './components/domains/create-domain/create
 import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
+import { NotifiersComponent } from './components/notifiers/notifiers.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DnsDetailsComponent } from './components/dns-details/dns-details.compon
     WafComponent,
     DnsComponent,
     DnsDetailsComponent,
+    NotifiersComponent,
   ],
   imports: [
     BrowserModule,

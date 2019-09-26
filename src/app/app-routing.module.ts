@@ -13,6 +13,7 @@ import { RegistrarsComponent } from './components/registrars/registrars.componen
 import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
+import { NotifiersComponent } from './components/notifiers/notifiers.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -58,8 +59,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'dns',
-    component: DnsComponent,
+    path: 'notifiers',
+    component: NotifiersComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'domains' },
