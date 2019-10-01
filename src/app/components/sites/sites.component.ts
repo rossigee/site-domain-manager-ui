@@ -7,7 +7,7 @@ import { SitesService } from 'src/app/services/sites.service';
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
-  styleUrls: ['./sites.component.css'],
+  styleUrls: ['../../app.component.css', './sites.component.css'],
 })
 export class SitesComponent implements OnInit {
   searchTerm: FormControl;

@@ -23,7 +23,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-domain-details',
   templateUrl: './domain-details.component.html',
-  styleUrls: ['./domain-details.component.css'],
+  styleUrls: ['../../app.component.css', './domain-details.component.css',],
   providers: [DomainsService],
 })
 export class DomainDetailsComponent implements OnInit {
