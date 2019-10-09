@@ -1,4 +1,11 @@
-<div class="container" *ngIf="!loading && waf$ | async as waf; else notready">
+<div class="row my-3 ml-0">
+</div>
+
+<!-- Search results container -->
+<div
+  class="container"
+  *ngIf="!loading && waf$ | async as waf; else notready"
+>
   <ng-container>
     <div class="table-responsive" *ngIf="waf.length > 0">
       <!-- Search results table -->
