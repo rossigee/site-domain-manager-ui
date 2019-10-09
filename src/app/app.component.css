@@ -9,6 +9,18 @@ tbody,
 tr {
   cursor: pointer;
 }
+table,
+ .table td, .table th{
+   border: none;
+}
+table,
+th:first-of-type {
+  border-top-left-radius: 6px;
+}
+table,
+th:last-of-type {
+  border-top-right-radius: 6px;
+}
 .btn-edit {
   margin: 0;
   padding: 0;
