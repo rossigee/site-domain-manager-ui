@@ -10,11 +10,17 @@
   class="container"
   *ngIf="!loading && registrar$ | async as registrar; else notready"
 >
-  <h2>
-    <strong>{{ registrar.label }}</strong>
-  </h2>
-
-  <div class="container">
+<div class="card my-3 w-100">
+  <div class="card-header bg-primary text-white">
+    <div class="row my-3 ml-0">
+      <div class="col-md-12">
+        <h2 class="card-title">
+          <strong>{{ registrar.label }}</strong>
+        </h2>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
     <table class="table">
       <tr>
         <td>
@@ -42,18 +48,19 @@
 
     <!-- <button type="submit" class="btn btn-primary">Update</button> -->
   </div>
-
-  <div class="container" *ngIf="registrar.refresh_method == 'api'">
-    <div class="form-group">
-      <button class="btn btn-primary" (click)="refreshFromApi()">
-        Refresh from API
-      </button>
+  <div class="card-footer">
+    <div class="container" *ngIf="registrar.refresh_method == 'api'">
+      <div class="form-group">
+        <button class="btn btn-primary" (click)="refreshFromApi()">
+          Refresh from API
+        </button>
+      </div>
     </div>
-  </div>
 
-  <div class="container" *ngIf="registrar.refresh_method == 'csvfile'">
-    <div class="form-group">
-      <label for="file">Upload CSV file:</label>
+    <div class="input-group input-group-sm mb-3" *ngIf="registrar.refresh_method == 'csvfile'">
+      <div class="input-group-prepend">
+        <label for="file" class="input-group-text" id="inputGroup-sizing-sm">Upload CSV File: </label>
+      </div>
       <input
         type="file"
         accept=".csv"
@@ -61,17 +68,17 @@
         (change)="csvInput($event.target.files)"
       />
     </div>
-  </div>
 
-  <div class="container" *ngIf="registrar.refresh_method == 'jsonfile'">
-    <div class="form-group">
-      <label for="file">Upload JSON file:</label>
-      <input
-        type="file"
-        accept=".json"
-        id="file"
-        (change)="jsonInput($event.target.files)"
-      />
+    <div class="container" *ngIf="registrar.refresh_method == 'jsonfile'">
+      <div class="form-group">
+        <label for="file">Upload JSON file:</label>
+        <input
+          type="file"
+          accept=".json"
+          id="file"
+          (change)="jsonInput($event.target.files)"
+        />
+      </div>
     </div>
   </div>
 </div>
