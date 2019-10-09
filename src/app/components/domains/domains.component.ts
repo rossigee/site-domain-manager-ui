@@ -8,7 +8,7 @@ import { Domain } from 'src/app/models/Domain';
 @Component({
   selector: 'app-domains',
   templateUrl: './domains.component.html',
-  styleUrls: ['../css/components.css', './domains.component.css'],
+  styleUrls: ['../../app.component.css', './domains.component.css'],
 })
 export class DomainsComponent implements OnInit {
   searchTerm: FormControl;
