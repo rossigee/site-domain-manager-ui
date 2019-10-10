@@ -1,9 +1,18 @@
-<div class="container" *ngIf="!loading && dns$ | async as dns; else notready">
+<div class="row my-3 ml-0">
+</div>
+
+<div
+  class="container"
+  *ngIf="!loading && dns$ | async as dns; else notready"
+>
   <ng-container>
-    <div class="table-responsive" *ngIf="dns.length > 0">
+    <div
+      class="table-responsive"
+      *ngIf="dns.length > 0"
+    >
       <!-- Search results table -->
       <table class="table table-hover table-fixed table-striped">
-        <thead class="thead-light">
+        <thead class="bg-primary text-white">
           <tr>
             <th>#</th>
             <th>Label</th>
