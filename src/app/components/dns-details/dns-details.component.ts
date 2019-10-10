@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-dns-details',
   templateUrl: './dns-details.component.html',
-  styleUrls: ['./dns-details.component.css'],
+  styleUrls: ['../../app.component.css', './dns-details.component.css'],
 })
 export class DnsDetailsComponent implements OnInit {
   id: string;
