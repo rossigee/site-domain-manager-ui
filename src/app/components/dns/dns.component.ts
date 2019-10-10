@@ -6,7 +6,7 @@ import { Dns } from 'src/app/models/Dns';
 @Component({
   selector: 'app-dns',
   templateUrl: './dns.component.html',
-  styleUrls: ['./dns.component.css'],
+  styleUrls: ['../../app.component.css', './dns.component.css'],
 })
 export class DnsComponent implements OnInit {
   notready: boolean;
