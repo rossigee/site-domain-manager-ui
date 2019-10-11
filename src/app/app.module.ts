@@ -30,6 +30,7 @@ import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
 import { NotifiersComponent } from './components/notifiers/notifiers.component';
+import { NotifierDetailsComponent } from './components/notifier-details/notifier-details.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { NotifiersComponent } from './components/notifiers/notifiers.component';
     DnsComponent,
     DnsDetailsComponent,
     NotifiersComponent,
+    NotifierDetailsComponent,
   ],
   imports: [
     BrowserModule,
