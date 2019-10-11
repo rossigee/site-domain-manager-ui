@@ -18,7 +18,7 @@
     id="navbarsDefault"
     [ngbCollapse]="isCollapsed"
   >
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav nav-pills mr-auto">
       <li class="nav-item">
         <a class="nav-link" routerLinkActive="active" [routerLink]="['/sites']"
           >Sites <span class="sr-only">(current)</span></a
@@ -33,11 +33,10 @@
         >
       </li>
     </ul>
-
     <ul class="navbar-nav navbar-right mr-auto">
       <li class="nav-item dropdown" ngbDropdown display="dynamic">
         <a
-          [class]="isAgent ? 'nav-link active' : 'nav-link'"
+          [class]="isAgent ? 'nav-link active dropdown-toggle' : 'nav-link dropdown-toggle'"
           style="cursor: pointer"
           ngbDropdownToggle
           id="agents"

@@ -1,55 +1,63 @@
-<div class="container" *ngIf="!loading && dns$ | async as dns; else notready">
-  <div class="top-bar row">
-    <div class="col-md-10">
-      <h2 class="branding">
-        <strong>{{ editing ? 'Edit DNS ' + dns.label : dns.label }}</strong>
-      </h2>
+<div
+  class="container"
+  *ngIf="!loading && dns$ | async as dns; else notready"
+>
+  <div class="card my-3 w-100">
+    <div class="card-header bg-primary text-white">
+      <div class="row my-3 ml-0">
+        <div class="col-md-10">
+          <h2 class="card-title">
+            <strong>{{ editing ? 'Edit DNS ' + dns.label : dns.label }}</strong>
+          </h2>
+        </div>
+        <div class="col-md-2 text-right">
+          <button
+            [class]="
+              editing
+                ? 'btn-edit btn-edit editing'
+                : updating
+                ? 'btn-edit disabled'
+                : 'btn-edit'
+            "
+            [disabled]="updating"
+            title="Edit"
+            (click)="switchEditing()"
+          >
+            <span class="fa fa-pencil-square-o"></span>
+          </button>
+        </div>
+        <img
+          class="pl-3"
+          *ngIf="updating"
+          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+        />
+      </div>
     </div>
-    <div class="col-md-2 text-right">
-      <button
-        [class]="
-          editing
-            ? 'btn-edit btn-edit editing'
-            : updating
-            ? 'btn-edit disabled'
-            : 'btn-edit'
-        "
-        [disabled]="updating"
-        title="Edit"
-        (click)="switchEditing()"
-      >
-        <span class="fa fa-pencil-square-o"></span>
-      </button>
+    <div class="card-body">
+      <div [class]="updating ? 'table-wrap disabled' : 'table-wrap'">
+        <table class="table" *ngIf="!editing">
+          <tr>
+            <td>
+              Agent module
+            </td>
+            <td>
+              <div>{{ dns.agent_module }}</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Active
+            </td>
+            <td>
+              <div>{{ dns.active ? 'True' : 'False' }}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <img
-      class="pl-3"
-      *ngIf="updating"
-      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
-    />
-  </div>
 
-  <div [class]="updating ? 'table-wrap disabled' : 'table-wrap'">
-    <table class="table" *ngIf="!editing">
-      <tr>
-        <td>
-          Agent module
-        </td>
-        <td>
-          <div>{{ dns.agent_module }}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Active
-        </td>
-        <td>
-          <div>{{ dns.active ? 'True' : 'False' }}</div>
-        </td>
-      </tr>
-    </table>
+    <ng-container *ngIf="editing"></ng-container>
   </div>
-
-  <ng-container *ngIf="editing"></ng-container>
 </div>
 
 <ng-template #notready>
