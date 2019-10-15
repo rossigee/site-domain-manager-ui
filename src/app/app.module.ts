@@ -30,6 +30,7 @@ import { WafComponent } from './components/waf/waf.component';
 import { HostingComponent } from './components/hosting/hosting.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
+import { HostingDetailsComponent } from './components/hosting-details/hosting-details.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { DnsDetailsComponent } from './components/dns-details/dns-details.compon
     HostingComponent,
     DnsComponent,
     DnsDetailsComponent,
+    HostingDetailsComponent,
   ],
   imports: [
     BrowserModule,
