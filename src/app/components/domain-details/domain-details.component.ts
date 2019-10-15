@@ -1,6 +1,6 @@
+
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { Domain, DomainStatusCheck } from 'src/app/models/Domain';
 import { DomainsService } from 'src/app/services/domains.service';
 import { Observable } from 'rxjs';
@@ -23,7 +23,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-domain-details',
   templateUrl: './domain-details.component.html',
-  styleUrls: ['./domain-details.component.css'],
+  styleUrls: ['../../app.component.css', './domain-details.component.css'],
   providers: [DomainsService],
 })
 export class DomainDetailsComponent implements OnInit {

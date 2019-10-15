@@ -7,7 +7,7 @@ import { WafService } from 'src/app/services/waf.service';
 @Component({
   selector: 'app-waf',
   templateUrl: './waf.component.html',
-  styleUrls: ['./waf.component.css'],
+  styleUrls: ['../../app.component.css', './waf.component.css'],
 })
 export class WafComponent implements OnInit {
   waf$: Observable<Waf[]>;

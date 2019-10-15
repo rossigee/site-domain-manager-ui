@@ -7,7 +7,7 @@ import { Registrar } from 'src/app/models/Registrar';
 @Component({
   selector: 'app-registrars',
   templateUrl: './registrars.component.html',
-  styleUrls: ['./registrars.component.css'],
+  styleUrls: ['../../app.component.css', './registrars.component.css'],
 })
 export class RegistrarsComponent implements OnInit {
   searchTerm: FormControl;

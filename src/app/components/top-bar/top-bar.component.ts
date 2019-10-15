@@ -12,7 +12,7 @@ export class TopBarComponent implements OnInit {
 
   constructor(private route: Router) {
     this.isCollapsed = true;
-    this.agents = ['waf', 'dns', 'hosting', 'registrars'];
+    this.agents = ['waf', 'dns', 'hosting'];
   }
 
   get isAgent(): boolean {
