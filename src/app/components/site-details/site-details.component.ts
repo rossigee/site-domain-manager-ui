@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-site-details',
   templateUrl: './site-details.component.html',
-  styleUrls: ['./site-details.component.css'],
+  styleUrls: ['../../app.component.css', './site-details.component.css'],
   providers: [SitesService],
 })
 export class SiteDetailsComponent implements OnInit {
