@@ -1,0 +1,40 @@
+<div
+  class="container"
+  *ngIf="!loading && hosting$ | async as hosting; else notready"
+>
+  <div class="card my-3 w-100">
+    <div class="card-header bg-primary text-white">
+      <div class="row my-3 ml-0">
+        <div class="col-md-10">
+          <h2 class="card-title">
+            <strong>{{ hosting.label }}</strong>
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Refresh Hosting {{ hosting.label }}</p>
+      <button
+        [class]="updating ? 'btn btn-success disabled' : 'btn btn-success'"
+        (click)="refresh()"
+      >
+        Refresh
+        <img
+          class="pl-3"
+          *ngIf="updating"
+          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+        />
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notready>
+  <ng-container *ngIf="!loading">
+    <h2>Hosting not found</h2>
+
+    <div class="container">
+      <p>Hosting id '{{ id }}' not found.</p>
+    </div>
+  </ng-container></ng-template
+>

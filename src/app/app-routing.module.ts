@@ -13,6 +13,8 @@ import { RegistrarsComponent } from './components/registrars/registrars.componen
 import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
+import { HostingComponent } from './components/hosting/hosting.component';
+import { HostingDetailsComponent } from './components/hosting-details/hosting-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -58,8 +60,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'dns',
-    component: DnsComponent,
+    path: 'hosting',
+    component: HostingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'hosting/:hostingId',
+    component: HostingDetailsComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'domains' },
