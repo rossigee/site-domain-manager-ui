@@ -1,0 +1,43 @@
+<div class="row my-3 ml-0"></div>
+
+<div
+  class="container"
+  *ngIf="!loading && notifiers$ | async as notifiers; else notready"
+>
+  <ng-container>
+    <div class="table-responsive" *ngIf="notifiers.length > 0">
+      <!-- Search results table -->
+      <table class="table table-hover table-fixed table-striped">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th>#</th>
+            <th>Label</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let notifier of notifiers"
+            routerLink="/notifiers/{{ notifier.id }}"
+          >
+            <th scope="row">
+              <span class="badge badge-secondary">{{ notifier.id }}</span>
+            </th>
+            <td>{{ notifier.label }}</td>
+            <td>{{ notifier.updated_time | date: 'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #notready>
+  <div *ngIf="loading">
+    <img
+      class="pl-3"
+      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
+  </div>
+  <p *ngIf="!loading">No notifiers found.</p>
+</ng-template>
