@@ -67,7 +67,7 @@ export class NotifiersService {
   }
 
   /**
-   * Load all (filtered by term) registrars
+   * Load all notifiers
    *
    * @param force Force ignore HTTP cache, default ''
    */
@@ -85,6 +85,42 @@ export class NotifiersService {
           this.store.notifiers = res.notifiers;
           this.notifiers$.next(Object.assign({}, this.store).notifiers);
           this.loading.bulk = false;
+        },
+      });
+  }
+
+  /**
+   * Load notifier by id
+   *
+   * @param id Notifier ID
+   * @param force Force ignore HTTP cache, default ''
+   */
+  load(id: string, force: boolean = false): void {
+    this.currentNotifierId = id;
+    this.loading.single = true;
+    const options = {
+      headers: !force ? this.headers : this.headers.set('reset-cache', 'true'),
+    };
+
+    this.http
+      .get<any>(`${this.url}/${this.currentNotifierId}`, options)
+      .pipe(catchError(this.handleError<any>('loadAll')))
+      .subscribe({
+        next: (res: any) => {
+          let notFound = true;
+          const newNotifier = res.notifier;
+          this.store.notifiers.forEach((notifier: any, index: number) => {
+            if (notifier.id === newNotifier.id) {
+              this.store.notifiers[index] = newNotifier;
+              notFound = false;
+            }
+          });
+          if (notFound) {
+            this.store.notifiers.push(newNotifier);
+          }
+
+          this.notifiers$.next(Object.assign({}, this.store).notifiers);
+          this.loading.single = false;
         },
       });
   }

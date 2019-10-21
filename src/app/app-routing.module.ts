@@ -14,6 +14,7 @@ import { WafComponent } from './components/waf/waf.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
 import { NotifiersComponent } from './components/notifiers/notifiers.component';
+import { NotifierDetailsComponent } from './components/notifier-details/notifier-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -61,6 +62,11 @@ const routes: Routes = [
   {
     path: 'notifiers',
     component: NotifiersComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'notifiers/:notifierId',
+    component: NotifierDetailsComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'domains' },

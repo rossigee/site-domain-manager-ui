@@ -1,3 +1,5 @@
+<div class="row my-3 ml-0"></div>
+
 <div
   class="container"
   *ngIf="!loading && notifiers$ | async as notifiers; else notready"
@@ -6,7 +8,7 @@
     <div class="table-responsive" *ngIf="notifiers.length > 0">
       <!-- Search results table -->
       <table class="table table-hover table-fixed table-striped">
-        <thead class="thead-light">
+        <thead class="bg-primary text-white">
           <tr>
             <th>#</th>
             <th>Label</th>
