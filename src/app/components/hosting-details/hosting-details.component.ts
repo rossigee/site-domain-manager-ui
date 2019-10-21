@@ -11,14 +11,14 @@ import { Hosting } from 'src/app/models/Hosting';
 })
 export class HostingDetailsComponent implements OnInit {
   private id: string;
-  private hosting$: Observable<Hosting>;
+  hosting$: Observable<Hosting>;
 
   constructor(private hostingService: HostingService, route: ActivatedRoute) {
     this.id = route.snapshot.paramMap.get('hostingId');
   }
-  ngOnInit() {
-    this.hostingService.loadAll(false, this.id);
-    this.hosting$ = this.hostingService.hosting;
+
+  get loading() {
+    return this.hostingService.loading.bulk;
   }
 
   get updating(): boolean {
@@ -27,5 +27,10 @@ export class HostingDetailsComponent implements OnInit {
 
   refresh(): void {
     this.hostingService.refresh(this.id);
+  }
+
+  ngOnInit() {
+    this.hostingService.loadAll(false, this.id);
+    this.hosting$ = this.hostingService.hosting;
   }
 }

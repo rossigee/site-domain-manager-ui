@@ -14,6 +14,10 @@ export class HostingComponent implements OnInit {
 
   constructor(private hostingService: HostingService) {}
 
+  get loading() {
+    return this.hostingService.loading.bulk;
+  }
+
   ngOnInit() {
     this.hostingService.loadAll();
     this.hostings$ = this.hostingService.hostings;
