@@ -11,7 +11,7 @@ import { NotifiersService } from 'src/app/services/notifiers.service';
 })
 export class NotifierDetailsComponent implements OnInit {
   private id: string;
-  private notifier$: Observable<Notifier>;
+  notifier$: Observable<Notifier>;
   private notready: boolean;
   private editing: boolean;
 
