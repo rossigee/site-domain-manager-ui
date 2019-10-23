@@ -31,6 +31,8 @@ import { HostingComponent } from './components/hosting/hosting.component';
 import { DnsComponent } from './components/dns/dns.component';
 import { DnsDetailsComponent } from './components/dns-details/dns-details.component';
 import { HostingDetailsComponent } from './components/hosting-details/hosting-details.component';
+import { NotifiersComponent } from './components/notifiers/notifiers.component';
+import { NotifierDetailsComponent } from './components/notifier-details/notifier-details.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { HostingDetailsComponent } from './components/hosting-details/hosting-de
     DnsComponent,
     DnsDetailsComponent,
     HostingDetailsComponent,
+    NotifiersComponent,
+    NotifierDetailsComponent,
   ],
   imports: [
     BrowserModule,
